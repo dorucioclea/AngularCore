@@ -17,6 +17,11 @@ namespace AngularCore.Repositories
             return _users.Find( u => u.Id.Equals(id));
         }
 
+        public User GetUserByEmail(string email)
+        {
+            return _users.Find( u => u.Email.Equals(email));
+        }
+
         public User AddUser(User user)
         {
             _users.Add(user);

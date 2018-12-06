@@ -41,12 +41,13 @@ namespace AngularCore.Controllers
         [ProducesResponseType(400)]
         public IActionResult Register([FromBody] RegisterForm form)
         {
-            if(!form.Password.Equals(form.PasswordCheck))
+            User user = _userRepository.GetUserByEmail(form.Email);
+            if(user != null || !form.Password.Equals(form.PasswordCheck))
             {
                 return BadRequest();
             }
 
-            User user = _userRepository.AddUser(new User(
+            user = _userRepository.AddUser(new User(
                 name: form.Name,
                 surname: form.Surname,
                 email: form.Email,
