@@ -1,0 +1,16 @@
+<div class="container">
+  <div class="col-sm-8 col-sm-offset-2">
+    <h1>Create Post</h1>
+    <form (ngSubmit)="addPost(postForm)" #postForm="ngForm">
+
+      <div class="form-group">
+        <textarea rows="4" cols="50" class="form-control" id="post-content"
+                  [(ngModel)]="postForm.content" name="content" required>
+        </textarea>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="!postForm.form.valid">Add</button>
+
+    </form>
+  </div>
+</div>

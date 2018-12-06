@@ -1,0 +1,55 @@
+<div class='main-nav'>
+    <div class='navbar navbar-inverse'>
+        <div class='navbar-header'>
+            <button type='button' class='navbar-toggle' data-toggle='collapse' data-target='.navbar-collapse' [attr.aria-expanded]='isExpanded' (click)='toggle()'>
+                <span class='sr-only'>Toggle navigation</span>
+                <span class='icon-bar'></span>
+                <span class='icon-bar'></span>
+                <span class='icon-bar'></span>
+            </button>
+            <a class='navbar-brand' [routerLink]='["/"]'>AngularCore</a>
+            <div *ngIf='getLoggedUser(); let user'>
+              <p class="text-right text-uppercase text-primary">
+                <strong>
+                  {{user?.name}} {{user?.surname}}
+                </strong>
+              </p>
+            </div>
+        </div>
+        <div class='clearfix'></div>
+        <div class='navbar-collapse collapse' [ngClass]='{ "in": isExpanded }'>
+            <ul class='nav navbar-nav'>
+              <li [routerLinkActive]='["link-active"]'>
+                  <a [routerLink]='["/fetch-data"]' (click)='collapse()'>
+                      <span class='glyphicon glyphicon-th-list'></span> Fetch data
+                  </a>
+              </li>
+              <li [routerLinkActive]='["link-active"]' *ngIf='!authService.isLoggedIn()'>
+                <a [routerLink]='["/auth"]' (click)='collapse()'>
+                    <span class='glyphicon glyphicon-user'></span> Authenticate
+                </a>
+              </li>
+            </ul>
+            <div *ngIf='authService.isLoggedIn()'>
+              <hr />
+              <ul class='nav navbar-nav'>
+                <li [routerLinkActive]='["link-active"]' [routerLinkActiveOptions]='{ exact: true }'>
+                    <a [routerLink]='["/"]' (click)='collapse()'>
+                        <span class='glyphicon glyphicon-list-alt'></span> Wall
+                    </a>
+                </li>
+                <li>
+                  <a [routerLink]='["/post"]' (click)='collapse()'>
+                    <span class='glyphicon glyphicon-plus'></span> Post
+                  </a>
+                </li>
+                <li>
+                  <a [routerLink]='["/"]' (click)='authService.logout(); collapse()'>
+                      <span class='glyphicon glyphicon-remove-sign'></span> Logout
+                  </a>
+                </li>
+              </ul>
+            </div>
+        </div>
+    </div>
+</div>

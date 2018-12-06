@@ -1,0 +1,57 @@
+<div class="container">
+  <div class="col-sm-4 col-sm-offset-4">
+    <h1>Login</h1>
+    <form (ngSubmit)="onLogin(loginForm)" #loginForm="ngForm">
+      <div class="form-group">
+        <label for="login-email">Email:</label>
+        <input type="text" class="form-control" id="login-email"
+              [(ngModel)]="loginForm.email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="login-password">Password:</label>
+        <input type="password" class="form-control" id="login-password"
+              [(ngModel)]="loginForm.password" name="password" required>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="!loginForm.form.valid">Login</button>
+
+    </form>
+
+    <h1>Register</h1>
+    <form (ngSubmit)="onRegister(registerForm)" #registerForm="ngForm">
+      <div class="form-group">
+        <label for="register-name">Name:</label>
+        <input type="text" class="form-control" id="register-name"
+              [(ngModel)]="registerForm.name" name="name" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-surname">Surname:</label>
+        <input type="text" class="form-control" id="register-surname"
+              [(ngModel)]="registerForm.surname" name="surname" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-email">Email:</label>
+        <input type="text" class="form-control" id="register-email"
+              [(ngModel)]="registerForm.email" name="email" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-password">Password:</label>
+        <input type="password" class="form-control" id="register-password"
+              [(ngModel)]="registerForm.password" name="password" required>
+      </div>
+
+      <div class="form-group">
+        <label for="register-passwordCheck">Confirm Password:</label>
+        <input type="password" class="form-control" id="register-passwordCheck"
+              [(ngModel)]="registerForm.passwordCheck" name="passwordCheck" required>
+      </div>
+
+      <button type="submit" class="btn btn-success" [disabled]="!registerForm.form.valid">Register</button>
+
+    </form>
+  </div>
+</div>
