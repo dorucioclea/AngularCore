@@ -23,9 +23,13 @@ namespace AngularCore.Controllers
 
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(Post), 201)]
+        [ProducesResponseType(400)]
         public IActionResult CreatePost([FromBody] PostForm form)
         {
             User owner = _userRepository.GetUserById(form.OwnerId);
+            if( owner == null ) {
+                return BadRequest("User does not exist");
+            }
             Post post = _postRepository.AddPost(new Post(
                 owner: owner,
                 content: form.Content
@@ -59,7 +63,8 @@ namespace AngularCore.Controllers
         public IActionResult UpdatePost(string id, [FromBody] PostForm form)
         {
             Post post = _postRepository.GetPostById(id);
-            if( post == null )
+            User owner = _userRepository.GetUserById(form.OwnerId);
+            if( post == null || owner == null )
             {
                 return BadRequest();
             }

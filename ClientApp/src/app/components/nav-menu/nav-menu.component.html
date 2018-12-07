@@ -8,7 +8,7 @@
                 <span class='icon-bar'></span>
             </button>
             <a class='navbar-brand' [routerLink]='["/"]'>AngularCore</a>
-            <div *ngIf='getLoggedUser(); let user'>
+            <div *ngIf='loggedUser; let user'>
               <p class="text-right text-uppercase text-primary">
                 <strong>
                   {{user?.name}} {{user?.surname}}
@@ -24,13 +24,13 @@
                       <span class='glyphicon glyphicon-th-list'></span> Fetch data
                   </a>
               </li>
-              <li [routerLinkActive]='["link-active"]' *ngIf='!authService.isLoggedIn()'>
+              <li [routerLinkActive]='["link-active"]' *ngIf='!authService.isLoggedIn'>
                 <a [routerLink]='["/auth"]' (click)='collapse()'>
                     <span class='glyphicon glyphicon-user'></span> Authenticate
                 </a>
               </li>
             </ul>
-            <div *ngIf='authService.isLoggedIn()'>
+            <div *ngIf='authService.isLoggedIn'>
               <hr />
               <ul class='nav navbar-nav'>
                 <li [routerLinkActive]='["link-active"]' [routerLinkActiveOptions]='{ exact: true }'>

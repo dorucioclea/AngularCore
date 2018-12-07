@@ -24,7 +24,7 @@ export class PostComponent {
   addPost(postForm: NgForm) {
     this.spinnerService.show();
     this.postForm = postForm.value;
-    this.postForm.ownerId = this.authService.getLoggedUser().id;
+    this.postForm.ownerId = this.authService.loggedUser.id;
     this.http.post<Post>("/api/Post/CreatePost", this.postForm).toPromise()
       .then( result => {
         this.router.navigate(["/"]);

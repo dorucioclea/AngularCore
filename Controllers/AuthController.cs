@@ -31,7 +31,7 @@ namespace AngularCore.Controllers
             User userFound = _userRepository.GetAllUsers().Find( u => u.Email == form.Email && u.Password == form.Password );
             if( userFound == null )
             {
-                return BadRequest();
+                return BadRequest("Incorrect credentials");
             }
             return Ok(GenerateLoginResponse(userFound));
         }
@@ -44,7 +44,8 @@ namespace AngularCore.Controllers
             User user = _userRepository.GetUserByEmail(form.Email);
             if(user != null || !form.Password.Equals(form.PasswordCheck))
             {
-                return BadRequest();
+                String message = (user != null ? "This mail is already taken." : "Passwords don't match.");
+                return BadRequest(message);
             }
 
             user = _userRepository.AddUser(new User(

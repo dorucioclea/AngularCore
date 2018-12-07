@@ -16,8 +16,8 @@ export class NavMenuComponent {
     this.user$ = authService.userSubject.asObservable();
   }
 
-  public getLoggedUser(): LoggedUser {
-    return this.authService.getLoggedUser();
+  public get loggedUser(): LoggedUser {
+    return this.authService.loggedUser;
   }
 
   collapse() {

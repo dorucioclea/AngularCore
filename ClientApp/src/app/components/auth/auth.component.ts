@@ -1,40 +1,86 @@
 import { LoggedUser } from './../../models/logged-user';
 import { AuthService } from './../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { NgForm } from '@angular/forms';
+import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { LoginForm } from '../../models/login-form';
 import { RegisterForm } from '../../models/register-form';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
+import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
   styleUrls: ['./auth.component.css']
 })
-export class AuthComponent {
+export class AuthComponent implements OnInit {
 
-  loginForm = new LoginForm();
-  registerForm = new RegisterForm();
+  loginForm: FormGroup;
+  registerForm: FormGroup;
+  returnUrl: string;
+  loginSubmitted = false;
+  registerSubmitted = false;
 
-  constructor(private authService: AuthService, private router: Router) { }
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
+  ) { }
 
-  private onLogin(form: NgForm) {
-    this.authService.login(form.value).subscribe( (user : LoggedUser) => {
+  ngOnInit() {
+    this.loginForm = this.formBuilder.group({
+      email:    ['', [ Validators.required, Validators.email ] ],
+      password: ['', Validators.required]
+    });
+
+    this.registerForm = this.formBuilder.group({
+      name:           ['', Validators.required],
+      surname:        ['', Validators.required],
+      email:          ['', [ Validators.required, Validators.email ] ],
+      password:       ['', Validators.required],
+      passwordCheck:  ['', Validators.required]
+    });
+
+    this.authService.logout();
+    this.returnUrl = this.route.snapshot.queryParams['returnUrl'] || '/';
+
+  }
+
+  get loginFields() {
+    return this.loginForm.controls;
+  }
+
+  get registerFields() {
+    return this.registerForm.controls;
+  }
+
+  private onLogin() {
+    this.loginSubmitted = true;
+    if(this.loginForm.invalid) {
+      return;
+    }
+
+    this.authService.login(this.loginForm.value).pipe(first()).subscribe( (user : LoggedUser) => {
       console.log("User logged in successfuly!\n", user)
-      this.redirectHome();
+      this.redirectToReturn();
     });
   }
 
-  private onRegister(form: NgForm) {
-    this.authService.register(form.value).subscribe( (user : LoggedUser) => {
+  private onRegister() {
+    this.registerSubmitted = true;
+    if(this.registerForm.invalid) {
+      return;
+    }
+
+    this.authService.register(this.registerForm.value).pipe(first()).subscribe( (user : LoggedUser) => {
       console.log("User registered successfuly!\n", user)
-      this.redirectHome();
+      this.redirectToReturn();
     })
-    console.log("Register: ", form.value);
+    console.log("Register: ", this.registerFields);
   }
 
-  private redirectHome(){
-    this.router.navigate(['/']);
+  private redirectToReturn(){
+    this.router.navigate([this.returnUrl]);
   }
 
 }

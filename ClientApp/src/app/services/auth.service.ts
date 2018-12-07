@@ -4,17 +4,19 @@ import { LoginResponse } from './../models/login-response';
 import { RegisterForm } from '../models/register-form';
 import { LoggedUser } from './../models/logged-user';
 import { LoginForm } from './../models/login-form';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Injectable } from '@angular/core';
-import { map, tap, catchError } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, OnInit } from '@angular/core';
+import { tap, catchError } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subject } from 'rxjs/Subject';
 import * as moment from "moment";
 import { Router } from '@angular/router';
 
-@Injectable()
-export class AuthService {
+@Injectable({
+  providedIn: 'root'
+})
+export class AuthService implements OnInit {
 
   private authUrl = "/api/Auth";
   private authTokenFieldName  = 'auth_token';
@@ -25,8 +27,10 @@ export class AuthService {
 
   constructor(private http: HttpClient,
               private spinnerService: SpinnerOverlayService,
-              private router: Router) {
-    let loggedUser = this.getLoggedUser();
+              private router: Router) { }
+
+  ngOnInit() {
+    let loggedUser = this.loggedUser;
     if( this.isLoggedIn && loggedUser ) {
       this.checkIfUserExists(loggedUser);
     } else {
@@ -56,18 +60,20 @@ export class AuthService {
     );
   }
 
-  checkIfUserExists(loggedUser: LoggedUser) {
+  async checkIfUserExists(loggedUser: LoggedUser) {
     this.spinnerService.show("Loading user...");
-    console.log("Starting user check");
-    this.http.get<User>("/api/User/GetUser/" + loggedUser.id).toPromise()
-    .then( user => {
+    try {
+      let user = await this.http.get<User>("/api/User/GetUser/" + loggedUser.id).toPromise();
       console.log("User with id: [" + loggedUser.id + "] exists");
       this.renewSession()
-    }).catch( err => {
+      this.spinnerService.hide();
+      return true
+    } catch(err) {
       console.log("User fetch error: " + err);
       this.logout();
-    });
-    this.spinnerService.hide();
+      this.spinnerService.hide();
+      return false;
+    }
   }
 
   logout() {
@@ -75,26 +81,27 @@ export class AuthService {
     localStorage.removeItem(this.authTokenFieldName);
     localStorage.removeItem(this.expiresAtFieldName);
     this.userSubject.next(undefined);
+    this.redirectToLogin();
   }
 
   redirectToLogin() {
     this.router.navigate(['/auth']);
   }
 
-  isLoggedIn() {
+  get isLoggedIn() {
     return moment().isBefore(this.getExpiration());
   }
 
-  isLoggedOut() {
-    return !this.isLoggedIn();
+  get isLoggedOut() {
+    return !this.isLoggedIn;
   }
 
-  getLoggedUser() : LoggedUser {
+  get loggedUser() : LoggedUser {
     let user = JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
     return user;
   }
 
-  getAuthToken() : string {
+  get authToken() : string {
     let token = localStorage.getItem(this.authTokenFieldName);
     return token;
   }
@@ -122,7 +129,7 @@ export class AuthService {
     this.userSubject.next(authResult.user);
   }
 
-  private handleError(where: string, why: object, what?: object) : ErrorObservable {
+  private handleError(where: string, why: object, what?: object) : ErrorObservable<any> {
     let message = "Error occured while executing " + where.toUpperCase();
     if(what){
       message += "\n[REQUEST]: " + JSON.stringify(what);

@@ -1,21 +1,22 @@
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
-import { HTTP_INTERCEPTORS } from '@angular/common/http';
-import { AuthService } from './services/auth.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
+import { MatFormFieldModule, MatInputModule, MatSidenavModule } from '@angular/material';
+import { NgModule } from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
-import { HomeComponent } from './components/home/home.component';
-import { CounterComponent } from './components/counter/counter.component';
-import { FetchDataComponent } from './components/fetch-data/fetch-data.component';
-import { AuthComponent } from './components/auth/auth.component';
-import { SpinnerOverlayService } from './services/spinner-overlay.service';
 import { SpinnerOverlayComponent } from './components/spinner-overlay/spinner-overlay.component';
+import { FetchDataComponent } from './components/fetch-data/fetch-data.component';
+import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
+import { CounterComponent } from './components/counter/counter.component';
+import { HomeComponent } from './components/home/home.component';
+import { AuthComponent } from './components/auth/auth.component';
 import { PostComponent } from './components/post/post.component';
+import { AuthGuard } from './guards/auth.guard';
+import { AppComponent } from './app.component';
 
 @NgModule({
   declarations: [
@@ -32,17 +33,20 @@ import { PostComponent } from './components/post/post.component';
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
     HttpClientModule,
     FormsModule,
+    ReactiveFormsModule,
+    BrowserAnimationsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSidenavModule,
     RouterModule.forRoot([
-      { path: '', component: HomeComponent, pathMatch: 'full' },
-      { path: 'counter', component: CounterComponent },
-      { path: 'fetch-data', component: FetchDataComponent },
+      { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard]},
+      { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },
       { path: 'auth', component: AuthComponent },
-      { path: 'post', component: PostComponent }
+      { path: 'post', component: PostComponent, canActivate: [AuthGuard] },
+      { path: '**', redirectTo: '' }
     ])
   ],
   providers: [
-    AuthService,
-    SpinnerOverlayService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true}
   ],
   bootstrap: [AppComponent],
