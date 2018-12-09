@@ -5,13 +5,13 @@ import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS } from '@angular/common/http';
 import { HttpClientModule } from '@angular/common/http';
 import { RouterModule } from '@angular/router';
-import { MatFormFieldModule, MatInputModule, MatSidenavModule } from '@angular/material';
 import { NgModule } from '@angular/core';
 
 import { SpinnerOverlayComponent } from './components/spinner-overlay/spinner-overlay.component';
 import { FetchDataComponent } from './components/fetch-data/fetch-data.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { CounterComponent } from './components/counter/counter.component';
+import { SharedUIModule } from './modules/shared-ui/shared-ui.module';
 import { HomeComponent } from './components/home/home.component';
 import { AuthComponent } from './components/auth/auth.component';
 import { PostComponent } from './components/post/post.component';
@@ -35,9 +35,7 @@ import { AppComponent } from './app.component';
     FormsModule,
     ReactiveFormsModule,
     BrowserAnimationsModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSidenavModule,
+    SharedUIModule,
     RouterModule.forRoot([
       { path: '', component: HomeComponent, pathMatch: 'full', canActivate: [AuthGuard]},
       { path: 'fetch-data', component: FetchDataComponent, canActivate: [AuthGuard] },

@@ -80,6 +80,7 @@ export class AuthService implements OnInit {
     localStorage.removeItem(this.loggedUsedFieldName);
     localStorage.removeItem(this.authTokenFieldName);
     localStorage.removeItem(this.expiresAtFieldName);
+    console.log("Logging out!");
     this.userSubject.next(undefined);
     this.redirectToLogin();
   }
