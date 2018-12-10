@@ -2,10 +2,14 @@
   padding-top: 10%;
 }
 
-.login-form {
-  width: 30%;
-}
+.auth-form {
 
-.register-form {
-  width: 40%;
+  &.horizontal {
+    width: 30%;
+  }
+
+  &.vertical {
+    width: 60%;
+  }
+
 }

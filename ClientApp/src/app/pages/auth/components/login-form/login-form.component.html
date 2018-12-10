@@ -1,0 +1,29 @@
+<mat-card>
+  <mat-card-content>
+    <!-- <mat-card class="error-message-box" *ngIf="loginSubmitted">
+      <mat-card-content>
+        Test Card
+      </mat-card-content>
+    </mat-card> -->
+    <form [formGroup]="loginForm" (ngSubmit)="submit()" fxLayout="column" fxLayoutGap="20px" >
+
+      <mat-form-field>
+        <input matInput type="email" formControlName="email" placeholder="Email">
+        <mat-error *ngIf="loginSubmitted && loginFields.email.errors">
+          <div *ngIf="loginFields.email.errors.required">Email is required</div>
+          <div *ngIf="loginFields.email.errors.email">Email is in wrong format</div>
+        </mat-error>
+      </mat-form-field>
+
+      <mat-form-field>
+        <input matInput type="password" formControlName="password" placeholder="Password">
+        <mat-error *ngIf="loginSubmitted && loginFields.password.errors">
+          <div *ngIf="loginFields.password.errors.required">Password is required</div>
+        </mat-error>
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" type="submit" fxLayout="row" fxLayoutAlign="end end">Login</button>
+
+    </form>
+  </mat-card-content>
+</mat-card>

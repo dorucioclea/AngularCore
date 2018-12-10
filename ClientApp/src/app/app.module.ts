@@ -18,6 +18,8 @@ import { PostComponent } from './components/post/post.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './pages/profile/profile.component';
+import { LoginFormComponent } from './pages/auth/components/login-form/login-form.component';
+import { RegisterFormComponent } from './pages/auth/components/register-form/register-form.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { ProfileComponent } from './pages/profile/profile.component';
     AuthComponent,
     SpinnerOverlayComponent,
     PostComponent,
-    ProfileComponent
+    ProfileComponent,
+    LoginFormComponent,
+    RegisterFormComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

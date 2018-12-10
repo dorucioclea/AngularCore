@@ -26,7 +26,6 @@ export class AuthService implements OnInit {
   public userSubject : Subject<LoggedUser> = new Subject();
 
   constructor(private http: HttpClient,
-              private spinnerService: SpinnerOverlayService,
               private router: Router) { }
 
   ngOnInit() {
@@ -61,17 +60,14 @@ export class AuthService implements OnInit {
   }
 
   async checkIfUserExists(loggedUser: LoggedUser) {
-    this.spinnerService.show("Loading user...");
     try {
       let user = await this.http.get<User>("/api/User/GetUser/" + loggedUser.id).toPromise();
       console.log("User with id: [" + loggedUser.id + "] exists");
       this.renewSession()
-      this.spinnerService.hide();
       return true
     } catch(err) {
       console.log("User fetch error: " + err);
       this.logout();
-      this.spinnerService.hide();
       return false;
     }
   }
