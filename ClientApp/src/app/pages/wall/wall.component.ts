@@ -1,12 +1,12 @@
-import { Post } from './../../models/post';
+import { Post } from '../../models/post';
 import { HttpClient } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-home',
-  templateUrl: './home.component.html',
+  selector: 'app-wall',
+  templateUrl: './wall.component.html',
 })
-export class HomeComponent implements OnInit {
+export class WallComponent implements OnInit {
 
   posts: Post[];
 

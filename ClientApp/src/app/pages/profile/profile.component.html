@@ -1,0 +1,6 @@
+<div *ngIf="profile$ | async; let profile; else loading">
+  {{profile | json}}
+</div>
+<ng-template #loading>
+  <app-spinner-overlay></app-spinner-overlay>
+</ng-template>

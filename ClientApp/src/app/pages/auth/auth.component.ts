@@ -1,16 +1,14 @@
-import { LoggedUser } from './../../models/logged-user';
-import { AuthService } from './../../services/auth.service';
+import { LoggedUser } from '../../models/logged-user';
+import { AuthService } from '../../services/auth.service';
 import { Component, OnInit } from '@angular/core';
-import { NgForm, FormGroup, FormBuilder, Validators } from '@angular/forms';
-import { LoginForm } from '../../models/login-form';
-import { RegisterForm } from '../../models/register-form';
+import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router, ActivatedRoute } from '@angular/router';
 import { first } from 'rxjs/operators';
 
 @Component({
   selector: 'app-auth',
   templateUrl: './auth.component.html',
-  styleUrls: ['./auth.component.css']
+  styleUrls: ['./auth.component.scss']
 })
 export class AuthComponent implements OnInit {
 
@@ -54,7 +52,7 @@ export class AuthComponent implements OnInit {
     return this.registerForm.controls;
   }
 
-  private onLogin() {
+  public onLogin() {
     this.loginSubmitted = true;
     if(this.loginForm.invalid) {
       return;
@@ -66,7 +64,7 @@ export class AuthComponent implements OnInit {
     });
   }
 
-  private onRegister() {
+  public onRegister() {
     this.registerSubmitted = true;
     if(this.registerForm.invalid) {
       return;

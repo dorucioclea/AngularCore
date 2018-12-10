@@ -1,0 +1,13 @@
+<div fxLayout="column" fxLayoutGap="30px">
+  <h1>All posts:</h1>
+  <div *ngFor="let post of posts" fxLayout="row">
+    <mat-card>
+      <mat-card-title>
+        {{post.createdAt}}
+      </mat-card-title>
+      <mat-card-content>
+        {{post.content}}
+      </mat-card-content>
+    </mat-card>
+  </div>
+</div>

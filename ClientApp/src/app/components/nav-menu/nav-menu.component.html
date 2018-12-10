@@ -1,167 +1,79 @@
 <mat-sidenav-container class="container">
-  <mat-sidenav #sidenav [(mode)]="over" [(opened)]="opened" class="bottom-to-top">
-    <div class="my-2" fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="10px">
-      <div>
-        <a>
-          <!-- Only temporary use until user profile pic is used -->
-          <img class="circle" src="../../../assets/images/default-profile-pic.png" width="100">
-        </a>
-      </div>
-    </div>
-    <div style="background-color: #3e50b5 !important;" class="mt-2 py-3 text-white" fxLayout="column" fxLayoutAlign="center center"
-         fxLayoutGap="7px" *ngIf="loggedUser; let user">
-      <div>
-        <a>
-          <span class="lead">{{user?.name}} {{user?.surname}}</span>
-        </a>
-      </div>
-      <div>
-        <a>
-          <span class="">{{user?.email}}</span>
-        </a>
-      </div>
-    </div>
-    <div class="mt-3">
+  <mat-sidenav #sidenav [(mode)]="over" [(opened)]="opened" *ngIf="loggedUser; let user">
+    <mat-card>
+      <mat-card-content>
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="20px" style="padding: 20px;">
+          <div>
+            <a>
+              <!-- Only temporary use until user profile pic is used -->
+              <img class="circle" src="../../../assets/images/default-profile-pic.png" width="100">
+            </a>
+          </div>
+        </div>
+        <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="2px">
+          <div>
+            <a mat-button [routerLink]='["/profile", loggedUser.id]'>
+              {{user?.name}} {{user?.surname}}
+            </a>
+          </div>
+          <span style="font-size: 11px">{{user?.email}}</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+    <div>
       <mat-nav-list>
-        <a mat-list-item class="ml-2" [routerLink]='["/"]' style="font-size:15px;">
-          Wall
-        </a>
-        <a mat-list-item class="ml-2" [routerLink]='["/post"]' style="font-size:15px;">
-          Post
-        </a>
+        <a mat-list-item [routerLink]='["/"]'>Wall</a>
+        <a mat-list-item [routerLink]='["/post"]'>Post</a>
       </mat-nav-list>
-      <!--<mat-accordion multi="true" [displayMode]="displayMode">
-        <mat-expansion-panel class="no-shadow">
-          <mat-expansion-panel-header fxLayout="row" [expandedHeight]="expandHeight" [collapsedHeight]="collapseHeight">
-            <mat-panel-title>
-              Buy Airtime
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list class="ml-0" dense>
-            <mat-list-item>
-              <a href="#">AirtelTigo Airtime</a>
-              <button mat-icon-button class="mr-3">
-                <mat-icon>info</mat-icon>
-              </button>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">Vodafone Airtime</a>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">MTN Airtime</a>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">GLO Airtime</a>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-expansion-panel>
-        <mat-expansion-panel class="no-shadow my-0">
-          <mat-expansion-panel-header fxLayout="row" [expandedHeight]="expandHeight" [collapsedHeight]="collapseHeight">
-            <mat-panel-title>
-              Buy Airtime
-            </mat-panel-title>
-          </mat-expansion-panel-header>
-          <mat-nav-list class="ml-0" dense>
-            <mat-list-item>
-              <a href="#">AirtelTigo Airtime</a>
-              <button mat-icon-button class="mr-3">
-                <mat-icon>info</mat-icon>
-              </button>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">Vodafone Airtime</a>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">MTN Airtime</a>
-            </mat-list-item>
-            <mat-list-item>
-              <a href="#">GLO Airtime</a>
-            </mat-list-item>
-          </mat-nav-list>
-        </mat-expansion-panel>
-      </mat-accordion>-->
     </div>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-toolbar color="primary" class="header-box-shadow">
-      <button mat-icon-button (click)="sidenav.toggle()" fxShow.sm="true" fxShow.gt-sm="false" *ngIf="loggedUser">
+      <button mat-icon-button (click)="toggleSideNav()" fxShow.sm="true" fxShow.gt-sm="false" *ngIf="loggedUser">
         <mat-icon>menu</mat-icon>
       </button>
       <button mat-button [routerLink]='["/"]'>
         <mat-icon class="mr-1">home</mat-icon>
         SocialMedia App :)
       </button>
-      <!-- Nice to have for future use for now -->
-      <!--<span fxShow.lt-md="false" fxShow.gt-sm="true">
-        <button mat-button>
-          <mat-icon class="mr-1">link</mat-icon>
-          Link
-        </button>
-        <button mat-button>
-          <mat-icon class="mr-1">link</mat-icon>
-          Link
-        </button>
-        <button mat-button [matMenuTriggerFor]="dropDown">
-          DropDown
-          <mat-icon class="ml-1">arrow_drop_down</mat-icon>
-        </button>
-        <mat-menu #dropDown="matMenu" overlapTrigger="false">
-          <button mat-menu-item>
-            <mat-icon>dialpad</mat-icon>
-            <span>Dropdown Link 1</span>
-          </button>
-          <button mat-menu-item disabled>
-            <mat-icon>voicemail</mat-icon>
-            <span>Dropdown Link 2</span>
-          </button>
-        </mat-menu>
-      </span>-->
       <span class="spacer"></span>
       <div *ngIf="loggedUser; let user">
-        <button mat-button fxShow.lt-md="false" fxShow.gt-sm="true">
-          <mat-icon>account_circle</mat-icon>
-          <span class="ml-2"> {{user?.name}} {{user?.surname}}</span>
-        </button>
-        <button mat-icon-button fxShow.lt-md="true" fxShow.gt-sm="false">
-          <mat-icon>account_circle</mat-icon>
-        </button>
-        <button mat-button title="Logout" fxShow.lt-md="false" fxShow.gt-sm="true" (click)="authService.logout()">
-          <mat-icon class="ml-3">exit_to_app</mat-icon>
-          <span class="ml-3"> Logout</span>
-        </button>
+        <div fxShow.lt-md="false" fxShow.gt-sm="true">
+          <button mat-button>
+            <mat-icon>account_circle</mat-icon>
+            <span> {{user?.name}} {{user?.surname}}</span>
+          </button>
+          <button mat-button title="Logout" (click)="authService.logout()">
+            <mat-icon>exit_to_app</mat-icon>
+            <span> Logout</span>
+          </button>
+        </div>
+        <div>
+          <button mat-icon-button [matMenuTriggerFor]="accToolbarMenu" fxShow.lt-md="true" fxShow.gt-sm="false">
+            <mat-icon>account_circle</mat-icon>
+          </button>
+          <mat-menu #accToolbarMenu="matMenu" overlapTrigger="false">
+            <button mat-menu-item>
+              <mat-icon>account_circle</mat-icon>
+              <span>{{user?.name}} {{user?.surname}}</span>
+            </button>
+            <button mat-menu-item (click)="authService.logout()">
+              <mat-icon>exit_to_app</mat-icon>
+              <span>Logout</span>
+            </button>
+          </mat-menu>
+        </div>
       </div>
       <div *ngIf="!loggedUser">
         <button mat-icon-button [routerLink]="['/auth']" fxShow.lt-md="true" fxShow.gt-sm="false">
           <mat-icon>account_circle</mat-icon>
         </button>
         <button mat-button [routerLink]="['/auth']" fxShow.lt-md="false" fxShow.gt-sm="true">
-          <mat-icon class="ml-3">account_circle</mat-icon>
-          <span class="ml-3"> Login </span>
+          <mat-icon>account_circle</mat-icon>
+          <span> Login </span>
         </button>
       </div>
-      <!-- Just nice to have for the future use, at least for now -->
-      <!--<button mat-button [matMenuTriggerFor]="menu" fxShow.lt-md="false" fxShow.gt-sm="true">
-    <mat-icon>account_circle</mat-icon>
-    <span class="ml-2">Account</span>
-  </button>
-  <button mat-icon-button [matMenuTriggerFor]="menu" fxShow.lt-md="true" fxShow.gt-sm="false">
-    <mat-icon>account_circle</mat-icon>
-  </button>
-  <mat-menu #menu="matMenu" overlapTrigger="false">
-    <button mat-menu-item>
-      <mat-icon>account_circle</mat-icon>
-      <span>My Account</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>settings</mat-icon>
-      <span>Settings</span>
-    </button>
-    <button mat-menu-item>
-      <mat-icon>money</mat-icon>
-      <span>Billing</span>
-    </button>
-  </mat-menu>-->
     </mat-toolbar>
     <ng-content></ng-content>
   </mat-sidenav-content>

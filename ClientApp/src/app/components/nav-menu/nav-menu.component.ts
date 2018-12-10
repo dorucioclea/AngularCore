@@ -1,14 +1,13 @@
 import { AuthService } from './../../services/auth.service';
 import { Component } from '@angular/core';
 import { LoggedUser } from '../../models/logged-user';
-import { Observable } from 'rxjs/Observable';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
-  styleUrls: ['./nav-menu.component.css']
+  styleUrls: ['./nav-menu.component.scss']
 })
 export class NavMenuComponent {
   opened = true;
@@ -37,5 +36,9 @@ export class NavMenuComponent {
   public get loggedUser(): LoggedUser {
     return this.authService.loggedUser;
   }
-  
+
+  public toggleSideNav() {
+    this.opened = !this.opened;
+  }
+
 }

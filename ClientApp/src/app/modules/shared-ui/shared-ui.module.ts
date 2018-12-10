@@ -7,7 +7,11 @@ import {
   MatMenuModule,
   MatSidenavModule,
   MatExpansionModule,
-  MatListModule
+  MatListModule,
+  MatDividerModule,
+  MatCardModule,
+  MatFormFieldModule,
+  MatInputModule
 } from '@angular/material';
 import { FlexLayoutModule } from '@angular/flex-layout';
 
@@ -20,9 +24,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatIconModule,
     MatMenuModule,
     MatSidenavModule,
-    FlexLayoutModule,
     MatExpansionModule,
-    MatListModule
+    MatListModule,
+    MatDividerModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FlexLayoutModule
   ],
   exports: [
     MatButtonModule,
@@ -31,9 +39,13 @@ import { FlexLayoutModule } from '@angular/flex-layout';
     MatIconModule,
     MatMenuModule,
     MatSidenavModule,
-    FlexLayoutModule,
     MatExpansionModule,
-    MatListModule
+    MatListModule,
+    MatDividerModule,
+    MatCardModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FlexLayoutModule
   ]
 })
 export class SharedUIModule { }

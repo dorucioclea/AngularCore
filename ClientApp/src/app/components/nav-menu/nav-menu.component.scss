@@ -1,3 +1,5 @@
+@import '../../../custom-theme.scss';
+
 .spacer {
   flex: 1 1 auto;
 }
@@ -11,7 +13,7 @@
 }
 
 mat-sidenav {
-  width: 250px;
+  width: 225px;
 }
 
 .circle {
@@ -46,5 +48,6 @@ mat-sidenav {
   border: 0px;
   border-right: 1px;
   border-style: solid;
-  border-image: linear-gradient(to top, #c1c1c1, rgba(0, 0, 0, 0)) 1 100%
+  border-right-color: black;
+  //border-image: linear-gradient(to top, #c1c1c1, rgba(0, 0, 0, 0)) 1 100%
 }
