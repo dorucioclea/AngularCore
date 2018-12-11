@@ -16,8 +16,9 @@
           <th>Surname</th>
           <th>Email</th>
           <th>Password</th>
-          <th>Created at:</th>
-          <th>Modified at:</th>
+          <th>Created at</th>
+          <th>Modified at</th>
+          <th>Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -29,6 +30,9 @@
           <td>{{ user.password }}</td>
           <td>{{ user.createdAt }}</td>
           <td>{{ user.modifiedAt }}</td>
+          <td>
+            <button mat-raised-button color="accent" (click)="addFriend()">Add Friend</button>
+          </td>
         </tr>
       </tbody>
     </table>

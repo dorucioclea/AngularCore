@@ -12,7 +12,7 @@
         </div>
         <div fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="2px">
           <div>
-            <a mat-button (click)="sidenav.close()" [routerLink]='["/profile", loggedUser.id]'>
+            <a mat-button (click)="linkClick()" [routerLink]='["/profile", loggedUser.id]'>
               {{user?.name}} {{user?.surname}}
             </a>
           </div>
@@ -22,8 +22,9 @@
     </mat-card>
     <div>
       <mat-nav-list>
-        <a mat-list-item (click)="sidenav.close()" [routerLink]='["/"]'>Wall</a>
-        <a mat-list-item (click)="sidenav.close()" [routerLink]='["/post"]'>Post</a>
+        <a mat-list-item (click)="linkClick()" [routerLink]='["/"]'>Wall</a>
+        <a mat-list-item (click)="linkClick()" [routerLink]='["/post"]'>Post</a>
+        <a mat-list-item (click)="linkClick()" [routerLink]='["/testing"]' style="color: red;">TESTING</a>
       </mat-nav-list>
     </div>
   </mat-sidenav>

@@ -23,6 +23,20 @@
   padding: 30px;
 }
 
+.error-message-box {
+  background-color: pink;
+  border: 1px;
+  border-style: solid;
+  border-color: darkred;
+  color: darkred;
+  padding: 10px !important;
+  margin-bottom: 16px;
+
+  & mat-card-content {
+    font-size: 12px !important;
+  }
+}
+
 html, body { height: 100%; }
 body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 

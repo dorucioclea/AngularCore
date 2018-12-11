@@ -6,10 +6,12 @@
 
   &.horizontal {
     width: 30%;
+    max-width: 300px;
   }
 
   &.vertical {
     width: 60%;
+    max-width: 300px;
   }
 
 }

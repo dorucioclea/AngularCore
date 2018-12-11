@@ -25,27 +25,27 @@ namespace AngularCore.Controllers
 
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(LoginResponse), 200)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Login([FromBody] LoginForm form)
         {
             User userFound = _userRepository.GetAllUsers().Find( u => u.Email == form.Email && u.Password == form.Password );
             if( userFound == null )
             {
-                return BadRequest("Incorrect credentials");
+                return BadRequest( new ErrorMessage("Incorrect credentials") );
             }
             return Ok(GenerateLoginResponse(userFound));
         }
 
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(LoginResponse), 201)]
-        [ProducesResponseType(400)]
+        [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Register([FromBody] RegisterForm form)
         {
             User user = _userRepository.GetUserByEmail(form.Email);
             if(user != null || !form.Password.Equals(form.PasswordCheck))
             {
-                String message = (user != null ? "This mail is already taken." : "Passwords don't match.");
-                return BadRequest(message);
+                string message = (user != null ? "This mail is already taken." : "Passwords don't match.");
+                return BadRequest(new ErrorMessage(message));
             }
 
             user = _userRepository.AddUser(new User(

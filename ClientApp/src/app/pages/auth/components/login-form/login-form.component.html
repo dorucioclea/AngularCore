@@ -1,24 +1,24 @@
 <mat-card>
   <mat-card-content>
-    <!-- <mat-card class="error-message-box" *ngIf="loginSubmitted">
+    <mat-card class="error-message-box" *ngIf="submitted && errorMessage">
       <mat-card-content>
-        Test Card
+        {{errorMessage}}
       </mat-card-content>
-    </mat-card> -->
-    <form [formGroup]="loginForm" (ngSubmit)="submit()" fxLayout="column" fxLayoutGap="20px" >
+    </mat-card>
+    <form [formGroup]="loginForm" (ngSubmit)="onLogin()" fxLayout="column" fxLayoutGap="20px" >
 
       <mat-form-field>
         <input matInput type="email" formControlName="email" placeholder="Email">
-        <mat-error *ngIf="loginSubmitted && loginFields.email.errors">
-          <div *ngIf="loginFields.email.errors.required">Email is required</div>
-          <div *ngIf="loginFields.email.errors.email">Email is in wrong format</div>
+        <mat-error *ngIf="submitted && fields.email.errors">
+          <div *ngIf="fields.email.errors.required">Email is required</div>
+          <div *ngIf="fields.email.errors.email">Email is in wrong format</div>
         </mat-error>
       </mat-form-field>
 
       <mat-form-field>
         <input matInput type="password" formControlName="password" placeholder="Password">
-        <mat-error *ngIf="loginSubmitted && loginFields.password.errors">
-          <div *ngIf="loginFields.password.errors.required">Password is required</div>
+        <mat-error *ngIf="submitted && fields.password.errors">
+          <div *ngIf="fields.password.errors.required">Password is required</div>
         </mat-error>
       </mat-form-field>
 

@@ -1,40 +1,45 @@
 <mat-card>
     <mat-card-content>
-      <form [formGroup]="registerForm" (ngSubmit)="submit()" fxLayout="column" fxLayoutGap="20px">
+      <mat-card class="error-message-box" *ngIf="submitted && errorMessage">
+        <mat-card-content>
+          {{errorMessage}}
+        </mat-card-content>
+      </mat-card>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" fxLayout="column" fxLayoutGap="20px">
 
         <mat-form-field>
           <input matInput type="text" formControlName="name" placeholder="Name">
-          <mat-error *ngIf="registerSubmitted && registerFields.name.errors">
-            <div *ngIf="registerFields.name.errors.required">Name is required</div>
+          <mat-error *ngIf="submitted && fields.name.errors">
+            <div *ngIf="fields.name.errors.required">Name is required</div>
           </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <input matInput type="text" formControlName="surname" placeholder="Surname">
-          <mat-error *ngIf="registerSubmitted && registerFields.surname.errors">
-            <div *ngIf="registerFields.surname.errors.required">Surname is required</div>
+          <mat-error *ngIf="submitted && fields.surname.errors">
+            <div *ngIf="fields.surname.errors.required">Surname is required</div>
           </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <input matInput type="email" formControlName="email" placeholder="Email">
-          <mat-error *ngIf="registerSubmitted && registerFields.email.errors">
-              <div *ngIf="registerFields.email.errors.required">Email is required</div>
-              <div *ngIf="registerFields.email.errors.email">Email is in wrong format</div>
+          <mat-error *ngIf="submitted && fields.email.errors">
+              <div *ngIf="fields.email.errors.required">Email is required</div>
+              <div *ngIf="fields.email.errors.email">Email is in wrong format</div>
           </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <input matInput type="password" formControlName="password" placeholder="Password">
-          <mat-error *ngIf="registerSubmitted && registerFields.password.errors">
-            <div *ngIf="registerFields.password.errors.required">Password is required</div>
+          <mat-error *ngIf="submitted && fields.password.errors">
+            <div *ngIf="fields.password.errors.required">Password is required</div>
           </mat-error>
         </mat-form-field>
 
         <mat-form-field>
           <input matInput type="password" formControlName="passwordCheck" placeholder="Confirm Password:">
-          <mat-error *ngIf="registerSubmitted && registerFields.passwordCheck.errors">
-            <div *ngIf="registerFields.passwordCheck.errors.required">Confirmation is required</div>
+          <mat-error *ngIf="submitted && fields.passwordCheck.errors">
+            <div *ngIf="fields.passwordCheck.errors.required">Confirmation is required</div>
           </mat-error>
         </mat-form-field>
 

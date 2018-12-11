@@ -13,7 +13,7 @@ export class TestingComponent {
 
   constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) { }
 
-  public testAuthEndpoint(){
+  public testAuthEndpoint() {
     this.authTest = true;
     this.http.get<User[]>('/api/User/GetAllUsers').toPromise()
     .then( response => {
@@ -21,6 +21,10 @@ export class TestingComponent {
     }).catch( error => {
       this.authErrorText = error.message;
     })
+  }
+
+  public addFriend() {
+    console.warn("Feature not implemented yet")
   }
 
 }

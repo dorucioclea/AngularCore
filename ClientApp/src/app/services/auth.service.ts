@@ -1,12 +1,11 @@
-import { SpinnerOverlayService } from './spinner-overlay.service';
 import { User } from './../models/user';
 import { LoginResponse } from './../models/login-response';
 import { RegisterForm } from '../models/register-form';
 import { LoggedUser } from './../models/logged-user';
 import { LoginForm } from './../models/login-form';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
-import { tap, catchError } from 'rxjs/operators';
+import { tap, catchError, first } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
 import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subject } from 'rxjs/Subject';
@@ -31,7 +30,7 @@ export class AuthService implements OnInit {
   ngOnInit() {
     let loggedUser = this.loggedUser;
     if( this.isLoggedIn && loggedUser ) {
-      this.checkIfUserExists(loggedUser);
+      this.checkIfUserExists(loggedUser.id);
     } else {
       this.logout();
     }
@@ -39,10 +38,11 @@ export class AuthService implements OnInit {
 
   login(form: LoginForm) {
     return this.http.post<LoginResponse>(this.authUrl + "/Login", form).pipe(
+      first(),
       tap(
         data => this.setSession(data)
       ),
-      catchError( (error) => {
+      catchError( (error : HttpErrorResponse) => {
         return this.handleError('login', error, form)
       })
     );
@@ -50,6 +50,7 @@ export class AuthService implements OnInit {
 
   register(form: RegisterForm) {
     return this.http.post<LoginResponse>(this.authUrl + "/Register", form).pipe(
+      first(),
       tap(
         data => this.setSession(data)
       ),
@@ -59,10 +60,18 @@ export class AuthService implements OnInit {
     );
   }
 
-  async checkIfUserExists(loggedUser: LoggedUser) {
+  async checkIfUserExists(userId?: string) {
+    if(!userId) {
+      if(this.loggedUser) {
+        userId = this.loggedUser.id;
+      } else {
+        return false;
+      }
+    }
+
     try {
-      let user = await this.http.get<User>("/api/User/GetUser/" + loggedUser.id).toPromise();
-      console.log("User with id: [" + loggedUser.id + "] exists");
+      await this.http.get<User>("/api/User/GetUser/" + userId).toPromise();
+      console.log("User with id: [" + userId + "] exists");
       this.renewSession()
       return true
     } catch(err) {
@@ -126,12 +135,13 @@ export class AuthService implements OnInit {
     this.userSubject.next(authResult.user);
   }
 
-  private handleError(where: string, why: object, what?: object) : ErrorObservable<any> {
+  private handleError(where: string, why: HttpErrorResponse, what?: any) {
     let message = "Error occured while executing " + where.toUpperCase();
     if(what){
       message += "\n[REQUEST]: " + JSON.stringify(what);
     }
     message += "\n[RESPONSE]: " + JSON.stringify(why);
-    return _throw(message);
+    console.warn(message);
+    return _throw(why);
   }
 }

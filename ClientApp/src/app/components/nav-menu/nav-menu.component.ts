@@ -1,8 +1,9 @@
 import { AuthService } from './../../services/auth.service';
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { LoggedUser } from '../../models/logged-user';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription } from 'rxjs';
+import { MatSidenav } from '@angular/material';
 
 @Component({
   selector: 'app-nav-menu',
@@ -10,6 +11,9 @@ import { Subscription } from 'rxjs';
   styleUrls: ['./nav-menu.component.scss']
 })
 export class NavMenuComponent {
+
+  @ViewChild('sidenav') sidenav : MatSidenav;
+
   opened = true;
   over = 'side';
   expandHeight = '42px';
@@ -39,6 +43,12 @@ export class NavMenuComponent {
 
   public toggleSideNav() {
     this.opened = !this.opened;
+  }
+
+  public linkClick() {
+    if(this.over === 'over') {
+      this.sidenav.close();
+    }
   }
 
 }

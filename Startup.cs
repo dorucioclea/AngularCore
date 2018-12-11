@@ -10,6 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 using AngularCore.Extensions;
 using AngularCore.Services;
 using AngularCore.Repositories.Impl;
+using AutoMapper;
 
 namespace AngularCore
 {
@@ -30,6 +31,7 @@ namespace AngularCore
 
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddAutoMapper();
             services.AddCustomJwt(appSettingsSection.GetValue<string>("Secret"));
 
             // In production, the Angular files will be served from this directory
