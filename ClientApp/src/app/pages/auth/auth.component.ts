@@ -23,7 +23,7 @@ export class AuthComponent implements OnInit {
     if( this.authService.checkIfUserExists() ) {
       this.router.navigate([this.returnUrl]);
     }
-    this.authService.logout();
+    this.authService.clearSession();
   }
 
 }

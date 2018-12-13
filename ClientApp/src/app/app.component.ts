@@ -9,5 +9,8 @@ import { Component } from '@angular/core';
 export class AppComponent {
   title = 'Social Media Application';
 
-  constructor(public spinner: SpinnerOverlayService ){ }
+  constructor(
+    public spinner: SpinnerOverlayService
+  ){ }
+
 }

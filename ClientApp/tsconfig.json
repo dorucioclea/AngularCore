@@ -19,7 +19,8 @@
     "module": "es2015",
     "baseUrl": "./src",
     "paths": {
-      "@app/*": ["app/*"]
+      "@app/*": ["app/*"],
+      "@assets/*": ["assets/*"]
     }
   }
 }

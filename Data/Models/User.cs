@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace AngularCore.Data.Models
 {
@@ -44,12 +45,23 @@ namespace AngularCore.Data.Models
             }
         }
 
+        private List<User> _friends;
+        public List<User> Friends
+        {
+            get => _friends;
+            set {
+                _friends = value;
+                Modified();
+            }
+        }
+
         public User(string name, string surname, string email, string password) : base()
         {
             _name = name;
             _surname = surname;
             _email = email;
             _password = password;
+            _friends = new List<User>();
         }
     }
 }

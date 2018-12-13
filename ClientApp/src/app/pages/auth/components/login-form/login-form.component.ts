@@ -1,4 +1,3 @@
-import { LoginFormService } from '@app/pages/auth/services/login-form.service';
 import { LoginResponse } from '@app/models/login-response';
 import { Component, Input, OnInit } from '@angular/core';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
@@ -7,35 +6,34 @@ import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
-  templateUrl: './login-form.component.html',
-  styleUrls: ['./login-form.component.scss']
+  templateUrl: './login-form.component.html'
 })
 export class LoginFormComponent implements OnInit {
 
   @Input() redirectRoute: string;
 
+  errorMessage: string;
+  loginForm: FormGroup;
+  submitted = false;
+
   constructor(
     private formBuilder: FormBuilder,
     private authService: AuthService,
-    private router: Router,
-    public loginFormService: LoginFormService
+    private router: Router
   ) { }
 
   ngOnInit() {
-    this.loginFormService.loginForm = this.formBuilder.group({
+    this.loginForm = this.formBuilder.group({
       email:    ['', [ Validators.required, Validators.email ] ],
       password: ['', Validators.required]
     });
   }
 
-  get errorMessage()  { return this.loginFormService.errorMessage }
-  get loginForm()     { return this.loginFormService.loginForm }
-  get submitted()     { return this.loginFormService.submitted }
   get fields()        { return this.loginForm.controls }
 
   public onLogin() {
-    this.loginFormService.submitted = true;
-    this.loginFormService.errorMessage = '';
+    this.submitted = true;
+    this.errorMessage = '';
     if(this.loginForm.invalid) {
       return;
     }
@@ -45,7 +43,7 @@ export class LoginFormComponent implements OnInit {
         console.log("User logged in successfuly!\n", user)
         this.redirectToReturn();
       }, (err) => {
-        this.loginFormService.errorMessage = err;
+        this.errorMessage = err;
     });
   }
 

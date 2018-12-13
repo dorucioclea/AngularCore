@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user.service';
 import { User } from '../../models/user';
 import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -11,7 +12,11 @@ export class TestingComponent {
   authTest = false;
   authErrorText: string;
 
-  constructor(private http: HttpClient, @Inject('BASE_URL') baseUrl: string) { }
+  constructor(
+    private http: HttpClient,
+    @Inject('BASE_URL') baseUrl: string,
+    private userService: UserService
+  ) { }
 
   public testAuthEndpoint() {
     this.authTest = true;
@@ -23,8 +28,8 @@ export class TestingComponent {
     })
   }
 
-  public addFriend() {
-    console.warn("Feature not implemented yet")
+  public addFriend(friend: User) {
+    this.userService.addFriend(friend);
   }
 
 }

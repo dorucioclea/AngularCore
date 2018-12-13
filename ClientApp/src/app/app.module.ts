@@ -1,3 +1,4 @@
+import { AuthService } from '@app/services/auth.service';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthInterceptor } from './interceptors/auth-interceptor';
@@ -20,6 +21,9 @@ import { AppComponent } from './app.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LoginFormComponent } from './pages/auth/components/login-form/login-form.component';
 import { RegisterFormComponent } from './pages/auth/components/register-form/register-form.component';
+import { UserProfileComponent } from './pages/profile/components/user-profile/user-profile.component';
+import { PostListComponent } from './components/post-list/post-list.component';
+import { FriendListComponent } from './pages/profile/components/friend-list/friend-list.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +36,10 @@ import { RegisterFormComponent } from './pages/auth/components/register-form/reg
     PostComponent,
     ProfileComponent,
     LoginFormComponent,
-    RegisterFormComponent
+    RegisterFormComponent,
+    UserProfileComponent,
+    PostListComponent,
+    FriendListComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),

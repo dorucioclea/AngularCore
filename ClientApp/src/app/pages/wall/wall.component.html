@@ -1,20 +1,4 @@
-{{posts | json}}
 <div fxLayout="column" fxLayoutGap="30px">
   <h1>All posts:</h1>
-  <div *ngFor="let post of posts" fxLayout="row">
-    <mat-card>
-      <mat-card-header>
-        <img mat-card-avatar src="../../../assets/images/default-profile-pic.png" />
-        <mat-card-title>
-          {{post.owner.name}} {{post.owner.surname}}
-        </mat-card-title>
-        <mat-card-subtitle>
-          {{post.owner.email}}
-        </mat-card-subtitle>
-      </mat-card-header>
-      <mat-card-content>
-        {{post.content}}
-      </mat-card-content>
-    </mat-card>
-  </div>
+  <app-post-list [posts]="posts"></app-post-list>
 </div>

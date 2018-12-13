@@ -3,11 +3,10 @@ import { LoginResponse } from './../models/login-response';
 import { RegisterForm } from '../models/register-form';
 import { LoggedUser } from './../models/logged-user';
 import { LoginForm } from './../models/login-form';
-import { HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { tap, catchError, first } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
-import { ErrorObservable } from 'rxjs/observable/ErrorObservable';
 import { Subject } from 'rxjs/Subject';
 import * as moment from "moment";
 import { Router } from '@angular/router';
@@ -15,7 +14,7 @@ import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService implements OnInit {
+export class AuthService {
 
   private authUrl = "/api/Auth";
   private authTokenFieldName  = 'auth_token';
@@ -24,19 +23,29 @@ export class AuthService implements OnInit {
 
   public userSubject : Subject<LoggedUser> = new Subject();
 
-  constructor(private http: HttpClient,
-              private router: Router) { }
-
-  ngOnInit() {
-    let loggedUser = this.loggedUser;
-    if( this.isLoggedIn && loggedUser ) {
-      this.checkIfUserExists(loggedUser.id);
-    } else {
+  constructor(
+    private http: HttpClient,
+    private router: Router
+  ) {
+    if(!this.checkIfUserExists()) {
       this.logout();
     }
   }
 
-  login(form: LoginForm) {
+  public get isLoggedIn()  { return moment().isBefore(this.getExpiration()) }
+  public get isLoggedOut() { return !this.isLoggedIn }
+
+  public get loggedUser() : LoggedUser {
+    let user = JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
+    return user;
+  }
+
+  public get authToken() : string {
+    let token = localStorage.getItem(this.authTokenFieldName);
+    return token;
+  }
+
+  public login(form: LoginForm) {
     return this.http.post<LoginResponse>(this.authUrl + "/Login", form).pipe(
       first(),
       tap(
@@ -48,7 +57,7 @@ export class AuthService implements OnInit {
     );
   }
 
-  register(form: RegisterForm) {
+  public register(form: RegisterForm) {
     return this.http.post<LoginResponse>(this.authUrl + "/Register", form).pipe(
       first(),
       tap(
@@ -60,56 +69,35 @@ export class AuthService implements OnInit {
     );
   }
 
-  async checkIfUserExists(userId?: string) {
-    if(!userId) {
-      if(this.loggedUser) {
-        userId = this.loggedUser.id;
-      } else {
-        return false;
+  public async checkIfUserExists(userId?: string) {
+    if( !userId && this.loggedUser ) {
+      userId = this.loggedUser.id;
+    }
+
+    if( userId ){
+      try {
+        await this.http.get<User>("/api/User/GetUser/" + userId).toPromise();
+        console.log("User with id: [" + userId + "] exists");
+        this.renewSession()
+        return true
+      } catch(err) {
+        debugger;
+        console.log("User fetch error: " + err);
       }
     }
-
-    try {
-      await this.http.get<User>("/api/User/GetUser/" + userId).toPromise();
-      console.log("User with id: [" + userId + "] exists");
-      this.renewSession()
-      return true
-    } catch(err) {
-      console.log("User fetch error: " + err);
-      this.logout();
-      return false;
-    }
+    this.logout();
+    return false;
   }
 
-  logout() {
-    localStorage.removeItem(this.loggedUsedFieldName);
-    localStorage.removeItem(this.authTokenFieldName);
-    localStorage.removeItem(this.expiresAtFieldName);
+  public logout() {
+    this.clearSession();
     console.log("Logging out!");
     this.userSubject.next(undefined);
     this.redirectToLogin();
   }
 
-  redirectToLogin() {
+  public redirectToLogin() {
     this.router.navigate(['/auth']);
-  }
-
-  get isLoggedIn() {
-    return moment().isBefore(this.getExpiration());
-  }
-
-  get isLoggedOut() {
-    return !this.isLoggedIn;
-  }
-
-  get loggedUser() : LoggedUser {
-    let user = JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
-    return user;
-  }
-
-  get authToken() : string {
-    let token = localStorage.getItem(this.authTokenFieldName);
-    return token;
   }
 
   private renewSession() {
@@ -133,6 +121,12 @@ export class AuthService implements OnInit {
     localStorage.setItem(this.authTokenFieldName, authResult.jwtToken);
     localStorage.setItem(this.expiresAtFieldName, JSON.stringify(expiresAt.valueOf()));
     this.userSubject.next(authResult.user);
+  }
+
+  public clearSession() {
+    localStorage.removeItem(this.loggedUsedFieldName);
+    localStorage.removeItem(this.authTokenFieldName);
+    localStorage.removeItem(this.expiresAtFieldName);
   }
 
   private handleError(where: string, why: HttpErrorResponse, what?: any) {

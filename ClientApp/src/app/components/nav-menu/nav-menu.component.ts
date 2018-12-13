@@ -15,6 +15,7 @@ export class NavMenuComponent {
   @ViewChild('sidenav') sidenav : MatSidenav;
 
   opened = true;
+  manuallyToggled = false;
   over = 'side';
   expandHeight = '42px';
   collapseHeight = '42px';
@@ -31,7 +32,9 @@ export class NavMenuComponent {
         this.opened = false;
         this.over = 'over';
       } else {
-        this.opened = true;
+        if(!this.manuallyToggled){
+          this.opened = true;
+        }
         this.over = 'side';
       }
     });
@@ -42,6 +45,9 @@ export class NavMenuComponent {
   }
 
   public toggleSideNav() {
+    if( this.over != 'over' ){
+      this.manuallyToggled = !this.manuallyToggled;
+    }
     this.opened = !this.opened;
   }
 

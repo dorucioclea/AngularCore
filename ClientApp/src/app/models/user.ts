@@ -9,8 +9,4 @@ export class User {
     public friends: FriendUser[]
   ){}
 
-  public get fullName() : string {
-    return this.name + " " + this.surname;
-  }
-
 }

@@ -17,9 +17,7 @@ export class AuthGuard implements CanActivate {
   canActivate(
     next: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean> | Promise<boolean> | boolean {
-    let user: LoggedUser = this.authService.loggedUser;
-
-    if( user != null && this.authService.checkIfUserExists(user.id) ) {
+    if( this.authService.checkIfUserExists() ) {
       return true;
     }
 

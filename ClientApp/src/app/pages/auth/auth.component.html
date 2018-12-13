@@ -1,19 +1,6 @@
 <div class="container content" >
-  <div fxLayout="row" fxShow.lt-md="false" fxShow.gt-sm="true" fxLayoutGap="5%" fxLayoutAlign="center center">
-    <div class="auth-form horizontal">
-      <app-login-form [redirectRoute]="returnUrl"></app-login-form>
-    </div>
-    <div class="auth-form horizontal">
-      <app-register-form [redirectRoute]="returnUrl"></app-register-form>
-    </div>
-  </div>
-
-  <div fxLayout="column" fxShow.lt-md="true" fxShow.gt-sm="false" fxLayoutGap="10%" fxLayoutAlign="start center">
-    <div class="auth-form vertical">
-      <app-login-form [redirectRoute]="returnUrl"></app-login-form>
-    </div>
-    <div class="auth-form vertical">
-      <app-register-form [redirectRoute]="returnUrl"></app-register-form>
-    </div>
+  <div fxLayout="row wrap" fxLayoutAlign="center center" fxLayoutGap="7.5% grid">
+    <app-login-form [redirectRoute]="returnUrl" fxFlex="30" fxFlex.sm="50" fxFlex.xs="80"></app-login-form>
+    <app-register-form [redirectRoute]="returnUrl" fxFlex="30" fxFlex.sm="50" fxFlex.xs="80"></app-register-form>
   </div>
 </div>

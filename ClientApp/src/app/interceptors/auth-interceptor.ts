@@ -1,8 +1,6 @@
-import { AuthService } from './../services/auth.service';
-import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent, HttpErrorResponse } from "@angular/common/http";
+import { HttpInterceptor, HttpRequest, HttpHandler, HttpEvent } from "@angular/common/http";
 import { Observable } from 'rxjs/Observable';
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
+import { Injectable, Injector } from '@angular/core';
 import 'rxjs/add/operator/do';
 import { catchError } from 'rxjs/operators';
 import { throwError } from 'rxjs';
@@ -10,10 +8,12 @@ import { throwError } from 'rxjs';
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-  constructor(private router: Router, private authService: AuthService){ }
+  /* TODO: inject AuthService and provide token and session operations from it
+      - as for before it was initialized too late and interceptor had undefined service causing error */
+  constructor(){ }
 
   intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-    const authToken = this.authService.authToken;
+    const authToken = localStorage.getItem('auth_token');
     if(authToken) {
       request = request.clone({
         headers: request.headers.set("Authorization", "Bearer " + authToken)
@@ -22,7 +22,9 @@ export class AuthInterceptor implements HttpInterceptor {
 
     return next.handle(request).pipe( catchError( err => {
       if( err.status === 401 ) {
-        this.authService.logout();
+        localStorage.removeItem('auth_token');
+        localStorage.removeItem('user');
+        localStorage.removeItem('expires_at')
         location.reload(true);
       }
 

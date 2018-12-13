@@ -16,7 +16,8 @@ import { Post } from '@app/models/post';
 export class ProfileComponent implements OnInit {
 
   profile$: Observable<User>;
-  posts$: Observable<Post[]>;
+  posts: Post[];
+  postsLoaded: boolean = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -29,14 +30,18 @@ export class ProfileComponent implements OnInit {
       switchMap( params => {
         return this.userService.getUser(params.get('id'));
       })
-    );
-    this.posts$ = this.route.paramMap.pipe(
+    )
+
+    this.route.paramMap.pipe(
       switchMap( params => {
         return this.postService.getUserPosts(params.get('id')).pipe(
           catchError(this.handleError)
         );
       })
-    )
+    ).subscribe( (posts: Post[]) => {
+      this.posts = posts;
+      this.postsLoaded = true;
+    });
   }
 
   private handleError(err: HttpErrorResponse): ObservableInput<Post[]>{
