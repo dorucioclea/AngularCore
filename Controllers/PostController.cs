@@ -30,14 +30,17 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult CreatePost([FromBody] PostForm form)
         {
-            User owner = _userRepository.GetUserById(form.OwnerId);
+            User owner = _userRepository.GetById(form.OwnerId);
             if( owner == null ) {
                 return BadRequest(new ErrorMessage("User does not exist"));
             }
-            Post post = _postRepository.AddPost(new Post(
-                owner: owner,
-                content: form.Content
-            ));
+
+            Post post = new Post {
+                User = owner,
+                Content = form.Content
+            };
+            _postRepository.Add(post);
+
             return Created("CreatePost", _mapper.Map<PostVM>(post));
         }
 
@@ -46,7 +49,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetPost(string id)
         {
-            Post post = _postRepository.GetPostById(id);
+            Post post = _postRepository.GetById(id);
             if( post == null )
             {
                 return NotFound();
@@ -60,8 +63,8 @@ namespace AngularCore.Controllers
         [ProducesResponseType(204)]
         public IActionResult GetUserPosts(string id)
         {
-            User user = _userRepository.GetUserById(id);
-            List<Post> posts = _postRepository.GetPostsForUser(user);
+            User user = _userRepository.GetById(id);
+            List<Post> posts = user.Posts;
             if( posts.Count == 0 )
             {
                 return NoContent();
@@ -75,7 +78,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(List<PostVM>), 200)]
         public IActionResult GetAllPosts()
         {
-            List<PostVM> posts = _mapper.Map<List<PostVM>>(_postRepository.GetAllPosts());
+            List<PostVM> posts = _mapper.Map<List<PostVM>>(_postRepository.GetAll());
             return Ok(posts);
         }
 
@@ -84,16 +87,16 @@ namespace AngularCore.Controllers
         [ProducesResponseType(400)]
         public IActionResult UpdatePost(string id, [FromBody] PostForm form)
         {
-            Post post = _postRepository.GetPostById(id);
-            User owner = _userRepository.GetUserById(form.OwnerId);
-            if( post == null || owner == null )
+            Post post = _postRepository.GetById(id);
+            if( post == null || post.User == null )
             {
                 return BadRequest();
             }
 
             post.Content = form.Content;
-            if(!_postRepository.UpdatePost(id, post))
-            {
+            try {
+                _postRepository.Update(post);
+            } catch{
                 return BadRequest();
             }
 
@@ -105,12 +108,12 @@ namespace AngularCore.Controllers
         [ProducesResponseType(404)]
         public IActionResult DeletePost(string id)
         {
-            Post post = _postRepository.GetPostById(id);
+            Post post = _postRepository.GetById(id);
             if( post == null )
             {
                 return NotFound();
             }
-            _postRepository.DeletePost(post);
+            _postRepository.Delete(post);
             return NoContent();
         }
 

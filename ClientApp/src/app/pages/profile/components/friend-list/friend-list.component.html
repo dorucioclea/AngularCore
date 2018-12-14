@@ -1,4 +1,4 @@
-<mat-card *ngIf="friends.count > 0">
+<mat-card *ngIf="friends && friends.count > 0">
   <mat-card-content>
     <mat-list>
       <mat-list-item *ngFor="let friend of friends">

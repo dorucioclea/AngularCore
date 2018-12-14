@@ -1,11 +1,12 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
 using AngularCore.Data.ViewModels;
 using AngularCore.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-
+using AngularCore.Data.Models;
 
 namespace AngularCore.Controllers
 {
@@ -28,7 +29,8 @@ namespace AngularCore.Controllers
         [ProducesResponseType(404)]
         public IActionResult GetUser(string userId)
         {
-            var user = _userRepository.GetUserById(userId);
+            var user = _userRepository.GetById(userId);
+            var friends = user.Friends;
             if(user != null)
             {
                 return Ok(_mapper.Map<UserVM>(user));
@@ -41,7 +43,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(204)]
         public IActionResult GetAllUsers()
         {
-            var users = _userRepository.GetAllUsers();
+            var users = _userRepository.GetAll().ToList();
             if( users == null || users.Count == 0) {
                 return NoContent();
             }
@@ -54,20 +56,20 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 404)]
         public IActionResult AddFriend([FromBody] UserVM friendVM)
         {
-            var user = _userRepository.GetUserById(User.Identity.Name);
+            var user = _userRepository.GetById(User.Identity.Name);
             if( user == null )
             {
                 return BadRequest(new ErrorMessage("Logged user is incorrect"));
             }
 
-            var friend = _userRepository.GetUserById(friendVM.Id);
+            var friend = _userRepository.GetById(friendVM.Id);
             if( friend == null )
             {
                 return NotFound(new ErrorMessage("User was not found"));
             }
 
-            user.Friends.Add(friend);
-            _userRepository.UpdateUser(user.Id, user);
+            user.AddFriend(friend);
+            _userRepository.Update(user);
             return Ok();
         }
     }

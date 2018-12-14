@@ -1,67 +1,45 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 
 namespace AngularCore.Data.Models
 {
-    public class User : BaseModel
+    public class User : BaseEntity
     {
-        private string _email;
-        public string Email
-        {
-            get => _email;
-            set {
-                _email = value;
-                Modified();
-            }
-        }
+        [Required]
+        public string Email { get; set; }
 
-        private string _password;
-        public string Password
-        {
-            get => _password;
-            set {
-                _password = value;
-                Modified();
-            }
-        }
+        [Required]
+        public string Password { get; set; }
 
-        private string _name;
-        public string Name
-        {
-            get => _name;
-            set {
-                _name = value;
-                Modified();
-            }
-        }
+        public string Name { get; set; }
 
-        private string _surname;
-        public string Surname
-        {
-            get => _surname;
-            set {
-                _surname = value;
-                Modified();
-            }
-        }
+        public string Surname { get; set; }
 
-        private List<User> _friends;
+        public Image ProfilePicture { get; set; }
+
+        public List<Comment> Comments { get; set; } = new List<Comment>();
+
+        public List<UserFriends> UserFriends { get; set; } = new List<UserFriends>();
+
+        public List<UserFriends> FriendUsers { get; set; } = new List<UserFriends>();
+
         public List<User> Friends
         {
-            get => _friends;
-            set {
-                _friends = value;
-                Modified();
+            get
+            {
+                var friends1 = UserFriends.Select( uf => uf.Friend );
+                var friends2 = FriendUsers.Select( fu => fu.User );
+                return friends1.Concat(friends2).Distinct().ToList();
             }
         }
 
-        public User(string name, string surname, string email, string password) : base()
+        public List<Post> Posts { get; set; } = new List<Post>();
+
+        public void AddFriend(User friend)
         {
-            _name = name;
-            _surname = surname;
-            _email = email;
-            _password = password;
-            _friends = new List<User>();
+            UserFriends.Add( new UserFriends( user: this, friend: friend ) );
         }
     }
 }

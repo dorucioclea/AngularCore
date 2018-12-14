@@ -8,6 +8,6 @@ namespace AngularCore.Data.ViewModels
         public string Email { get; set; }
         public string Name { get; set; }
         public string Surname { get; set; }
-        public List<FriendUserVM> Friends { get; set; }
+        public List<string> Friends { get; set; }
     }
 }

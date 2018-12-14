@@ -1,31 +1,16 @@
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+
 namespace AngularCore.Data.Models
 {
-    public class Post : BaseModel
+    public class Post : BaseEntity
     {
-        private User _owner;
-        public User Owner
-        {
-            get => _owner;
-            set {
-                _owner = value;
-                Modified();
-            }
-        }
+        [Required]
+        public User User { get; set; }
 
-        private string _content;
-        public string Content
-        {
-            get => _content;
-            set {
-                _content = value;
-                Modified();
-            }
-        }
+        public List<Comment> Comments { get; set; } = new List<Comment>();
 
-        public Post(User owner, string content) : base()
-        {
-            Owner = owner;
-            Content = content;
-        }
+        [Required]
+        public virtual string Content { get; set; }
     }
 }

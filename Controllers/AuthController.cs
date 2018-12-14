@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using AngularCore.Data.ViewModels;
 using AngularCore.Data.Models;
 using System;
+using System.Linq;
 using AngularCore.Repositories;
 using AngularCore.Services;
 using Microsoft.AspNetCore.Authorization;
@@ -28,7 +29,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Login([FromBody] LoginForm form)
         {
-            User userFound = _userRepository.GetAllUsers().Find( u => u.Email == form.Email && u.Password == form.Password );
+            User userFound = _userRepository.GetWhere( u => u.Email == form.Email && u.Password == form.Password ).FirstOrDefault();
             if( userFound == null )
             {
                 return BadRequest( new ErrorMessage("Incorrect credentials") );
@@ -41,21 +42,23 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Register([FromBody] RegisterForm form)
         {
-            User user = _userRepository.GetUserByEmail(form.Email);
+            User user = _userRepository.GetWhere( u => u.Email.Equals(form.Email)).FirstOrDefault();
             if(user != null || !form.Password.Equals(form.PasswordCheck))
             {
                 string message = (user != null ? "This mail is already taken." : "Passwords don't match.");
                 return BadRequest(new ErrorMessage(message));
             }
 
-            user = _userRepository.AddUser(new User(
-                name: form.Name,
-                surname: form.Surname,
-                email: form.Email,
-                password: form.Password
-            ));
+            User newUser = new User {
+                Id = Guid.NewGuid().ToString(),
+                Name = form.Name,
+                Surname = form.Surname,
+                Email = form.Email,
+                Password = form.Password
+            };
+            _userRepository.Add(newUser);
 
-            return CreatedAtAction("Register", GenerateLoginResponse(user));
+            return CreatedAtAction("Register", GenerateLoginResponse(newUser));
         }
 
         [Authorize]
@@ -63,7 +66,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(LoginResponse), 200)]
         public LoginResponse RenewSession()
         {
-            var currentUser = _userRepository.GetUserById(User.Identity.Name);
+            User currentUser = _userRepository.GetById(User.Identity.Name);
             LoginResponse renewalResponse = GenerateLoginResponse(currentUser);
             return renewalResponse;
         }

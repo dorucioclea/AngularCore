@@ -7,10 +7,12 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
 using AngularCore.Extensions;
 using AngularCore.Services;
 using AngularCore.Repositories.Impl;
 using AutoMapper;
+using AngularCore.Data.Contexts;
 
 namespace AngularCore
 {
@@ -31,6 +33,9 @@ namespace AngularCore
 
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddDbContext<ApplicationContext>( options =>
+                options.UseSqlServer(appSettingsSection.GetValue<string>("DbConnection"))
+            );
             services.AddAutoMapper();
             services.AddCustomJwt(appSettingsSection.GetValue<string>("Secret"));
 
@@ -40,8 +45,13 @@ namespace AngularCore
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            services.AddSingleton<IUserRepository, UserRepository>();
-            services.AddSingleton<IPostRepository, PostRepository>();
+            // For testing purposes when there is no access to database
+            // services.AddSingleton<IInMemoryUserRepository, InMemoryUserRepository>();
+            // services.AddSingleton<IInMemoryPostRepository, InMemoryPostRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<IImageRepository, ImageRepository>();
+
             services.AddScoped<IAuthService, AuthService>();
         }
 

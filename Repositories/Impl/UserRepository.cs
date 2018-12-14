@@ -1,48 +1,22 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using AngularCore.Data.Contexts;
 using AngularCore.Data.Models;
+using Microsoft.EntityFrameworkCore;
 
-namespace AngularCore.Repositories
+namespace AngularCore.Repositories.Impl
 {
-    public class UserRepository : IUserRepository
+    public class UserRepository : Repository<User>, IUserRepository
     {
-        private static List<User> _users = new List<User>();
+        public UserRepository(ApplicationContext context) : base(context) {}
 
-        public List<User> GetAllUsers()
+        public override User GetById(string id)
         {
-            return _users;
-        }
-
-        public User GetUserById(string id)
-        {
-            return _users.Find( u => u.Id.Equals(id));
-        }
-
-        public User GetUserByEmail(string email)
-        {
-            return _users.Find( u => u.Email.Equals(email));
-        }
-
-        public User AddUser(User user)
-        {
-            _users.Add(user);
-            return user;
-        }
-
-        public bool DeleteUser(User user)
-        {
-            return _users.Remove(user);
-        }
-
-        public bool UpdateUser(string id, User user)
-        {
-            var foundUser = GetUserById(id);
-            if(foundUser != null && id.Equals(user.Id))
-            {
-                if ( !DeleteUser(foundUser) ) return false;
-                AddUser(user);
-                return true;
-            }
-            return false;
+            return Entity
+                .Include( u => u.FriendUsers )
+                .Include( u => u.UserFriends )
+                .SingleOrDefault( u => u.Id.Equals(id) );
         }
     }
 }
