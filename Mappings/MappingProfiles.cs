@@ -9,9 +9,15 @@ namespace AngularCore.Mappings
     {
         public MappingProfiles()
         {
-            CreateMap<Post, PostVM>().ReverseMap();
+            CreateMap<Post, PostVM>()
+                .ForMember(
+                    pvm => pvm.Owner,
+                    opt => opt.MapFrom( p => p.User )
+                ).ReverseMap();
             CreateMap<UserFriends, FriendUserVM>().ReverseMap();
+            CreateMap<User, FriendUserVM>().ReverseMap();
             CreateMap<User, UserVM>().ReverseMap();
+            CreateMap<User, string>().ConvertUsing( u => u.Id );
         }
     }
 }

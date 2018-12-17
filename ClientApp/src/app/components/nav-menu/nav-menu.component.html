@@ -25,6 +25,8 @@
         <a mat-list-item (click)="linkClick()" [routerLink]='["/post"]' routerLinkActive="link-active">Post</a>
         <a mat-list-item (click)="linkClick()" [routerLink]='["/testing"]' routerLinkActive="link-active" style="color: red;">TESTING</a>
       </mat-nav-list>
+      <mat-divider></mat-divider>
+      <app-friend-list [friends]="userFriends$ | async"></app-friend-list>
     </div>
   </mat-sidenav>
 

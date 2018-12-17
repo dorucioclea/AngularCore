@@ -1,16 +1,18 @@
 import { AuthService } from './../../services/auth.service';
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, OnInit } from '@angular/core';
 import { LoggedUser } from '../../models/logged-user';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material';
+import { UserService } from '@app/services/user.service';
+import { FriendUser } from '@app/models/friend-user';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.scss']
 })
-export class NavMenuComponent {
+export class NavMenuComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav : MatSidenav;
 
@@ -22,9 +24,11 @@ export class NavMenuComponent {
   displayMode = 'flat';
 
   watcher: Subscription;
+  userFriends$: Observable<FriendUser[]>;
 
   constructor(
     public authService: AuthService,
+    private userService: UserService,
     private media: ObservableMedia
   ) {
     this.watcher = media.subscribe((change: MediaChange) => {
@@ -38,6 +42,10 @@ export class NavMenuComponent {
         this.over = 'side';
       }
     });
+  }
+
+  ngOnInit() {
+    this.userFriends$ = this.userService.getUserFriends(this.loggedUser.id);
   }
 
   public get loggedUser(): LoggedUser {

@@ -2,7 +2,7 @@
   <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="20px grid">
     <div fxFlex="30" fxFlex.lt-sm="80" fxLayout="column" fxLayoutGap="10px">
       <app-user-profile [user]="profile"></app-user-profile>
-      <app-friend-list [friends]="profile.friends" fxShow.gt-xs="true" fxShow.lt-sm="false"></app-friend-list>
+      <app-friend-list [friends]="friends$ | async" fxShow.gt-xs="true" fxShow.lt-sm="false"></app-friend-list>
     </div>
 
     <div fxFlex="70" fxFlex.lt-sm="80">

@@ -7,6 +7,7 @@ import { switchMap, catchError } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { Observable, ObservableInput } from 'rxjs';
 import { Post } from '@app/models/post';
+import { FriendUser } from '@app/models/friend-user';
 
 @Component({
   selector: 'app-profile',
@@ -16,6 +17,7 @@ import { Post } from '@app/models/post';
 export class ProfileComponent implements OnInit {
 
   profile$: Observable<User>;
+  friends$: Observable<FriendUser[]>;
   posts: Post[];
   postsLoaded: boolean = false;
 
@@ -30,18 +32,18 @@ export class ProfileComponent implements OnInit {
       switchMap( params => {
         return this.userService.getUser(params.get('id'));
       })
-    )
+    );
 
-    this.route.paramMap.pipe(
-      switchMap( params => {
-        return this.postService.getUserPosts(params.get('id')).pipe(
-          catchError(this.handleError)
-        );
-      })
-    ).subscribe( (posts: Post[]) => {
-      this.posts = posts;
-      this.postsLoaded = true;
+    this.profile$.subscribe( (user: User) => {
+      this.friends$ = this.userService.getUserFriends(user.id);
+      this.postService.getUserPosts(user.id).pipe(
+        catchError(this.handleError)
+      ).subscribe( (posts: Post[]) => {
+        this.posts = posts;
+        this.postsLoaded = true;
+      });;
     });
+
   }
 
   private handleError(err: HttpErrorResponse): ObservableInput<Post[]>{

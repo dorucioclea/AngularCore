@@ -15,7 +15,11 @@ export class UserService {
   ) { }
 
   public getUser(id: string) {
-    return this.http.get<User>(this.userUrl + "/GetUser/" + id);
+    return this.http.get<User>(this.userUrl + "/GetUser/" + id).toPromise();
+  }
+
+  public getUserFriends(id: string) {
+    return this.http.get<FriendUser[]>(this.userUrl + "/GetUserFriends/" + id);
   }
 
   public getAllUsers() {
@@ -23,9 +27,16 @@ export class UserService {
   }
 
   public addFriend(friend: User) {
-    this.http.post(this.userUrl + "/AddFriend", friend ).toPromise()
+    return this.http.post(this.userUrl + "/AddFriend", friend).toPromise()
     .catch( error => {
       console.warn("Friend add request failed: ", error);
+    })
+  }
+
+  public removeFriend(friend: FriendUser) {
+    return this.http.post(this.userUrl + "/RemoveFriend", friend).toPromise()
+    .catch( error => {
+      console.warn("Remove friend request failed: ", error);
     })
   }
 

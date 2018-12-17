@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace AngularCore.Data.Models
 {
@@ -25,6 +26,7 @@ namespace AngularCore.Data.Models
 
         public List<UserFriends> FriendUsers { get; set; } = new List<UserFriends>();
 
+        [NotMapped]
         public List<User> Friends
         {
             get
