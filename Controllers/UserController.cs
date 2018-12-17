@@ -86,7 +86,7 @@ namespace AngularCore.Controllers
         [HttpPost("[action]")]
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         [ProducesResponseType(200)]
-        public IActionResult RemoveFriend([FromBody] FriendUserVM friendVM)
+        public IActionResult RemoveFriend([FromBody] UserVM friendVM)
         {
             var user = _userRepository.GetById(User.Identity.Name);
             var friend = user.Friends.Find( f => f.Id == friendVM.Id);
@@ -117,7 +117,7 @@ namespace AngularCore.Controllers
             {
                 return NoContent();
             }
-            return Ok(_mapper.Map<List<FriendUserVM>>(friends));
+            return Ok(_mapper.Map<List<UserVM>>(friends));
         }
     }
 }

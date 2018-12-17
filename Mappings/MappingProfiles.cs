@@ -14,8 +14,6 @@ namespace AngularCore.Mappings
                     pvm => pvm.Owner,
                     opt => opt.MapFrom( p => p.User )
                 ).ReverseMap();
-            CreateMap<UserFriends, FriendUserVM>().ReverseMap();
-            CreateMap<User, FriendUserVM>().ReverseMap();
             CreateMap<User, UserVM>().ReverseMap();
             CreateMap<User, string>().ConvertUsing( u => u.Id );
         }

@@ -1,4 +1,4 @@
-import { UserService } from './../../services/user.service';
+import { FriendService } from './../../services/friend.service';
 import { User } from '../../models/user';
 import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -14,8 +14,7 @@ export class TestingComponent {
 
   constructor(
     private http: HttpClient,
-    @Inject('BASE_URL') baseUrl: string,
-    private userService: UserService
+    private friendService: FriendService
   ) { }
 
   public testAuthEndpoint() {
@@ -29,7 +28,7 @@ export class TestingComponent {
   }
 
   public addFriend(friend: User) {
-    this.userService.addFriend(friend);
+    this.friendService.addFriend(friend);
   }
 
 }

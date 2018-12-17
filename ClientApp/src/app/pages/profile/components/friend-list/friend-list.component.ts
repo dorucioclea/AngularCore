@@ -1,6 +1,6 @@
+import { FriendService } from './../../../../services/friend.service';
 import { Component, OnInit, Input } from '@angular/core';
-import { FriendUser } from '@app/models/friend-user';
-import { UserService } from '@app/services/user.service';
+import { User } from '@app/models/user';
 
 @Component({
   selector: 'app-friend-list',
@@ -9,17 +9,15 @@ import { UserService } from '@app/services/user.service';
 })
 export class FriendListComponent implements OnInit {
 
-  @Input() friends: FriendUser[];
+  @Input() friends: User[];
 
-  constructor(private userService: UserService) { }
+  constructor(private friendService: FriendService) { }
 
   ngOnInit() {
   }
 
-  public removeFriend(friend: FriendUser){
-    this.userService.removeFriend(friend).then( (result: any) => {
-      this.friends = this.friends.filter( f => f.id !== friend.id);
-    })
+  public removeFriend(friend: User){
+    this.friendService.removeFriend(friend);
   }
 
 }

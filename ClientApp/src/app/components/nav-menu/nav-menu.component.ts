@@ -1,18 +1,19 @@
+import { FriendService } from './../../services/friend.service';
 import { AuthService } from './../../services/auth.service';
-import { Component, ViewChild, OnInit } from '@angular/core';
+import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
 import { LoggedUser } from '../../models/logged-user';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material';
 import { UserService } from '@app/services/user.service';
-import { FriendUser } from '@app/models/friend-user';
+import { User } from '@app/models/user';
 
 @Component({
   selector: 'app-nav-menu',
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.scss']
 })
-export class NavMenuComponent implements OnInit {
+export class NavMenuComponent implements OnInit, OnDestroy {
 
   @ViewChild('sidenav') sidenav : MatSidenav;
 
@@ -23,15 +24,15 @@ export class NavMenuComponent implements OnInit {
   collapseHeight = '42px';
   displayMode = 'flat';
 
-  watcher: Subscription;
-  userFriends$: Observable<FriendUser[]>;
+  subscriptions: Subscription;
+  userFriends: User[];
 
   constructor(
     public authService: AuthService,
-    private userService: UserService,
+    private friendService: FriendService,
     private media: ObservableMedia
   ) {
-    this.watcher = media.subscribe((change: MediaChange) => {
+    this.subscriptions = media.subscribe((change: MediaChange) => {
       if (change.mqAlias === 'sm' || change.mqAlias === 'xs') {
         this.opened = false;
         this.over = 'over';
@@ -45,7 +46,13 @@ export class NavMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.userFriends$ = this.userService.getUserFriends(this.loggedUser.id);
+    this.subscriptions.add(this.friendService.friendList$.subscribe( (list) => {
+      this.userFriends = list;
+    }))
+  }
+
+  ngOnDestroy() {
+    this.subscriptions.unsubscribe();
   }
 
   public get loggedUser(): LoggedUser {

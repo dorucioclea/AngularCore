@@ -1,13 +1,13 @@
+import { FriendService } from './../../services/friend.service';
 import { HttpErrorResponse } from '@angular/common/http';
 import { PostService } from './../../services/post.service';
 import { UserService } from './../../services/user.service';
 import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { switchMap, catchError } from 'rxjs/operators';
+import { switchMap, catchError, finalize, first, tap } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { Observable, ObservableInput } from 'rxjs';
 import { Post } from '@app/models/post';
-import { FriendUser } from '@app/models/friend-user';
 
 @Component({
   selector: 'app-profile',
@@ -17,13 +17,13 @@ import { FriendUser } from '@app/models/friend-user';
 export class ProfileComponent implements OnInit {
 
   profile$: Observable<User>;
-  friends$: Observable<FriendUser[]>;
-  posts: Post[];
-  postsLoaded: boolean = false;
+  friends$: Observable<User[]>;
+  posts$: Observable<Post[]>;
 
   constructor(
     private route: ActivatedRoute,
     private userService: UserService,
+    private friendService: FriendService,
     private postService: PostService
   ) { }
 
@@ -35,13 +35,10 @@ export class ProfileComponent implements OnInit {
     );
 
     this.profile$.subscribe( (user: User) => {
-      this.friends$ = this.userService.getUserFriends(user.id);
-      this.postService.getUserPosts(user.id).pipe(
+      this.friends$ = this.friendService.getUserFriendlist(user.id);
+      this.posts$ = this.postService.getUserPosts(user.id).pipe(
         catchError(this.handleError)
-      ).subscribe( (posts: Post[]) => {
-        this.posts = posts;
-        this.postsLoaded = true;
-      });;
+      )
     });
 
   }
