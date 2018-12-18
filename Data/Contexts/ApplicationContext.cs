@@ -49,6 +49,10 @@ namespace AngularCore.Data.Contexts
             AddedEntities.ForEach( e =>
             {
                 e.Entity.CreatedAt = DateTime.Now;
+                if(e.Entity.GetType() == typeof(BaseEntity))
+                {
+                    ((BaseEntity) e.Entity).Id = Guid.NewGuid().ToString();
+                }
             });
 
             var ModifiedEntities = ChangeTracker.Entries<IEntityDate>().Where( e => e.State == EntityState.Modified ).ToList();

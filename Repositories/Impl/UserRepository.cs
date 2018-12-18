@@ -9,7 +9,7 @@ namespace AngularCore.Repositories.Impl
 {
     public class UserRepository : Repository<User>, IUserRepository
     {
-        public UserRepository(ApplicationContext context) : base(context) {}
+        public UserRepository(ApplicationContext context) : base(context) { }
 
         public override User GetById(string id)
         {

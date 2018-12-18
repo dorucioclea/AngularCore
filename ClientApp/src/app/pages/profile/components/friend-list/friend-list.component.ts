@@ -17,7 +17,9 @@ export class FriendListComponent implements OnInit {
   }
 
   public removeFriend(friend: User){
-    this.friendService.removeFriend(friend);
+    this.friendService.removeFriend(friend).subscribe(
+      () => window.location.reload(true)
+    );
   }
 
 }

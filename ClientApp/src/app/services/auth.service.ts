@@ -21,8 +21,6 @@ export class AuthService {
   private expiresAtFieldName = 'expires_at';
   private loggedUsedFieldName = 'user';
 
-  public userSubject : Subject<LoggedUser> = new Subject();
-
   constructor(
     private http: HttpClient,
     private router: Router
@@ -36,13 +34,11 @@ export class AuthService {
   public get isLoggedOut() { return !this.isLoggedIn }
 
   public get loggedUser() : LoggedUser {
-    let user = JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
-    return user;
+    return JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
   }
 
   public get authToken() : string {
-    let token = localStorage.getItem(this.authTokenFieldName);
-    return token;
+    return localStorage.getItem(this.authTokenFieldName);
   }
 
   public login(form: LoginForm) {
@@ -81,7 +77,6 @@ export class AuthService {
         this.renewSession()
         return true
       } catch(err) {
-        debugger;
         console.log("User fetch error: " + err);
       }
     }
@@ -92,11 +87,6 @@ export class AuthService {
   public logout() {
     this.clearSession();
     console.log("Logging out!");
-    this.userSubject.next(undefined);
-    this.redirectToLogin();
-  }
-
-  public redirectToLogin() {
     this.router.navigate(['/auth']);
   }
 
@@ -104,7 +94,7 @@ export class AuthService {
     this.http.get<LoginResponse>(this.authUrl + "/RenewSession/").toPromise()
       .then( user => {
         this.setSession(user);
-      }).catch( err => {
+      }).catch( () => {
         this.logout();
       })
   }
@@ -120,7 +110,6 @@ export class AuthService {
     localStorage.setItem(this.loggedUsedFieldName, JSON.stringify(authResult.user));
     localStorage.setItem(this.authTokenFieldName, authResult.jwtToken);
     localStorage.setItem(this.expiresAtFieldName, JSON.stringify(expiresAt.valueOf()));
-    this.userSubject.next(authResult.user);
   }
 
   public clearSession() {

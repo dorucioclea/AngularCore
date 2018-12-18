@@ -10,7 +10,7 @@ using System.Linq;
 namespace AngularCore.Controllers
 {
     [Authorize]
-    [Route("api/[controller]")]
+    [Route("api/v1/posts")]
     public class PostController : Controller
     {
 
@@ -25,31 +25,20 @@ namespace AngularCore.Controllers
             _mapper = mapper;
         }
 
-        [HttpPost("[action]")]
-        [ProducesResponseType(typeof(Post), 201)]
-        [ProducesResponseType(typeof(ErrorMessage), 400)]
-        public IActionResult CreatePost([FromBody] PostForm form)
+        [HttpGet]
+        [ProducesResponseType(typeof(List<PostVM>), 200)]
+        public IActionResult GetAllPosts()
         {
-            User owner = _userRepository.GetById(form.OwnerId);
-            if( owner == null ) {
-                return BadRequest(new ErrorMessage("User does not exist"));
-            }
-
-            Post post = new Post {
-                User = owner,
-                Content = form.Content
-            };
-            _postRepository.Add(post);
-
-            return Created("CreatePost", _mapper.Map<PostVM>(post));
+            List<PostVM> posts = _mapper.Map<List<PostVM>>(_postRepository.GetAll());
+            return Ok(posts);
         }
 
-        [HttpGet("[action]/{id}")]
+        [HttpGet("{postId}")]
         [ProducesResponseType(typeof(PostVM), 200)]
         [ProducesResponseType(404)]
-        public IActionResult GetPost(string id)
+        public IActionResult GetPost(string postId)
         {
-            Post post = _postRepository.GetById(id);
+            Post post = _postRepository.GetById(postId);
             if( post == null )
             {
                 return NotFound();
@@ -58,62 +47,52 @@ namespace AngularCore.Controllers
             return Ok(postVM);
         }
 
-        [HttpGet("[action]/{id}")]
-        [ProducesResponseType(typeof(List<PostVM>), 200)]
-        [ProducesResponseType(204)]
-        public IActionResult GetUserPosts(string id)
+        [HttpPost]
+        [ProducesResponseType(typeof(PostVM), 201)]
+        [ProducesResponseType(typeof(ErrorMessage), 404)]
+        public IActionResult CreatePost([FromBody] PostForm form)
         {
-            User user = _userRepository.GetById(id);
-            List<Post> posts = user.Posts;
-            if( posts.Count == 0 )
+            var user = _userRepository.GetById(form.OwnerId);
+            if(user == null)
             {
-                return NoContent();
+                return NotFound(new ErrorMessage("User not found"));
             }
-            List<PostVM> postVMs = _mapper.Map<List<PostVM>>(posts);
-            return Ok(postVMs);
+
+            var post = new Post {
+                User = user,
+                Content = form.Content
+            };
+
+            _postRepository.Add(post);
+            return Created(post.Id, post);
         }
 
-
-        [HttpGet("[action]")]
-        [ProducesResponseType(typeof(List<PostVM>), 200)]
-        public IActionResult GetAllPosts()
+        [HttpPut("{postId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(typeof(ErrorMessage), 400)]
+        public IActionResult UpdatePost(string postId, [FromBody] PostForm form)
         {
-            List<PostVM> posts = _mapper.Map<List<PostVM>>(_postRepository.GetAll());
-            return Ok(posts);
-        }
-
-        [HttpPut("[action]/{id}")]
-        [ProducesResponseType(typeof(Post), 200)]
-        [ProducesResponseType(400)]
-        public IActionResult UpdatePost(string id, [FromBody] PostForm form)
-        {
-            Post post = _postRepository.GetById(id);
-            if( post == null || post.User == null )
+            var post = _postRepository.GetById(postId);
+            if( post == null )
             {
-                return BadRequest();
+                return BadRequest(new ErrorMessage("Post was not found"));
             }
 
             post.Content = form.Content;
-            try {
-                _postRepository.Update(post);
-            } catch{
-                return BadRequest();
-            }
+            _postRepository.Update(post);
 
-            return Ok(post);
+            return Ok();
         }
 
-        [HttpDelete("[action]/{id}")]
+        [HttpDelete("{postId}")]
         [ProducesResponseType(204)]
-        [ProducesResponseType(404)]
-        public IActionResult DeletePost(string id)
+        public IActionResult DeletePost(string postId)
         {
-            Post post = _postRepository.GetById(id);
-            if( post == null )
+            var post = _postRepository.GetById(postId);
+            if( post != null )
             {
-                return NotFound();
+                _postRepository.Delete(post);
             }
-            _postRepository.Delete(post);
             return NoContent();
         }
 

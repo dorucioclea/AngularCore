@@ -16,18 +16,15 @@
         <span style="font-size: 11px">{{user?.email}}</span>
       </mat-card-content>
     </mat-card>
-    <div>
-      <mat-nav-list>
-        <a mat-list-item (click)="linkClick()" [routerLink]='["/"]'
-          routerLinkActive="link-active" [routerLinkActiveOptions]="{ exact: true }">
-            Wall
-        </a>
-        <a mat-list-item (click)="linkClick()" [routerLink]='["/post"]' routerLinkActive="link-active">Post</a>
-        <a mat-list-item (click)="linkClick()" [routerLink]='["/testing"]' routerLinkActive="link-active" style="color: red;">TESTING</a>
-      </mat-nav-list>
-      <mat-divider></mat-divider>
-      <app-friend-list [friends]="userFriends"></app-friend-list>
-    </div>
+    <mat-nav-list>
+      <a mat-list-item (click)="linkClick()" [routerLink]='["/"]'
+        routerLinkActive="link-active" [routerLinkActiveOptions]="{ exact: true }">
+          Wall
+      </a>
+      <a mat-list-item (click)="linkClick()" [routerLink]='["/post"]' routerLinkActive="link-active">Post</a>
+      <a mat-list-item (click)="linkClick()" [routerLink]='["/testing"]' routerLinkActive="link-active" style="color: red;">TESTING</a>
+    </mat-nav-list>
+    <app-friend-list [friends]="userFriends"></app-friend-list>
   </mat-sidenav>
 
   <mat-sidenav-content>

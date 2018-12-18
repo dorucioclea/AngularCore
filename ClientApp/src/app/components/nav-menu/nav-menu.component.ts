@@ -1,11 +1,10 @@
 import { FriendService } from './../../services/friend.service';
 import { AuthService } from './../../services/auth.service';
-import { Component, ViewChild, OnInit, OnDestroy } from '@angular/core';
+import { Component, ViewChild, OnInit} from '@angular/core';
 import { LoggedUser } from '../../models/logged-user';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material';
-import { UserService } from '@app/services/user.service';
 import { User } from '@app/models/user';
 
 @Component({
@@ -13,7 +12,7 @@ import { User } from '@app/models/user';
   templateUrl: './nav-menu.component.html',
   styleUrls: ['./nav-menu.component.scss']
 })
-export class NavMenuComponent implements OnInit, OnDestroy {
+export class NavMenuComponent implements OnInit {
 
   @ViewChild('sidenav') sidenav : MatSidenav;
 
@@ -24,15 +23,15 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   collapseHeight = '42px';
   displayMode = 'flat';
 
-  subscriptions: Subscription;
-  userFriends: User[];
+  watcher: Subscription;
+  userFriends$: Observable<User[]>;
 
   constructor(
     public authService: AuthService,
     private friendService: FriendService,
     private media: ObservableMedia
   ) {
-    this.subscriptions = media.subscribe((change: MediaChange) => {
+    this.watcher = media.subscribe((change: MediaChange) => {
       if (change.mqAlias === 'sm' || change.mqAlias === 'xs') {
         this.opened = false;
         this.over = 'over';
@@ -46,13 +45,9 @@ export class NavMenuComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
-    this.subscriptions.add(this.friendService.friendList$.subscribe( (list) => {
-      this.userFriends = list;
-    }))
-  }
-
-  ngOnDestroy() {
-    this.subscriptions.unsubscribe();
+    if(this.authService.isLoggedIn){
+      this.userFriends$ = this.friendService.getUserFriendlist(this.loggedUser.id);
+    }
   }
 
   public get loggedUser(): LoggedUser {

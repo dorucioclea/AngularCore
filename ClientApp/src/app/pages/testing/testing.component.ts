@@ -28,7 +28,9 @@ export class TestingComponent {
   }
 
   public addFriend(friend: User) {
-    this.friendService.addFriend(friend);
+    this.friendService.addFriend(friend).subscribe(
+      () => window.location.reload(true)
+    );
   }
 
 }

@@ -29,7 +29,8 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Login([FromBody] LoginForm form)
         {
-            User userFound = _userRepository.GetWhere( u => u.Email == form.Email && u.Password == form.Password ).FirstOrDefault();
+            User userFound = _userRepository.GetWhere( u => u.Email == form.Email && u.Password == form.Password )
+                                            .FirstOrDefault();
             if( userFound == null )
             {
                 return BadRequest( new ErrorMessage("Incorrect credentials") );
@@ -50,7 +51,6 @@ namespace AngularCore.Controllers
             }
 
             User newUser = new User {
-                Id = Guid.NewGuid().ToString(),
                 Name = form.Name,
                 Surname = form.Surname,
                 Email = form.Email,

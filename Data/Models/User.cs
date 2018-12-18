@@ -29,12 +29,7 @@ namespace AngularCore.Data.Models
         [NotMapped]
         public List<User> Friends
         {
-            get
-            {
-                var friends1 = UserFriends.Select( uf => uf.Friend );
-                var friends2 = FriendUsers.Select( fu => fu.User );
-                return friends1.Concat(friends2).Distinct().ToList();
-            }
+            get => UserFriends.Select( uf => uf.Friend ).Union( FriendUsers.Select( fu => fu.User )).ToList();
         }
 
         public List<Post> Posts { get; set; } = new List<Post>();
@@ -42,6 +37,12 @@ namespace AngularCore.Data.Models
         public void AddFriend(User friend)
         {
             UserFriends.Add( new UserFriends( user: this, friend: friend ) );
+        }
+
+        public void RemoveFriend(User friend)
+        {
+            UserFriends.RemoveAll( uf => uf.FriendId == friend.Id);
+            FriendUsers.RemoveAll( uf => uf.UserId == friend.Id);
         }
     }
 }
