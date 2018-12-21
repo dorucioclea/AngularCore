@@ -24,6 +24,7 @@ export class NavMenuComponent implements OnInit {
   displayMode = 'flat';
 
   watcher: Subscription;
+  loggedUser$: Observable<User>;
   userFriends$: Observable<User[]>;
 
   constructor(
@@ -45,13 +46,7 @@ export class NavMenuComponent implements OnInit {
   }
 
   ngOnInit() {
-    if(this.authService.isLoggedIn){
-      this.userFriends$ = this.friendService.getUserFriendlist(this.loggedUser.id);
-    }
-  }
-
-  public get loggedUser(): LoggedUser {
-    return this.authService.loggedUser;
+    this.loggedUser$ = this.authService.loggedUserSubject;
   }
 
   public toggleSideNav() {

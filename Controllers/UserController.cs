@@ -34,7 +34,7 @@ namespace AngularCore.Controllers
         }
 
         [HttpGet("{userId}")]
-        [ProducesResponseType(typeof(UserVM), 200)]
+        [ProducesResponseType(typeof(DetailedUserVM), 200)]
         [ProducesResponseType(404)]
         public IActionResult GetUser(string userId)
         {
@@ -43,7 +43,7 @@ namespace AngularCore.Controllers
             {
                 return NotFound();
             }
-            var mapped = _mapper.Map<UserVM>(user);
+            var mapped = _mapper.Map<DetailedUserVM>(user);
             return Ok(mapped);
         }
 
@@ -57,7 +57,7 @@ namespace AngularCore.Controllers
             {
                 return NotFound(new ErrorMessage("User was not found"));
             }
-            var friends = user.Friends.DefaultIfEmpty();
+            var friends = user.Friends.ToList();
             return Ok(_mapper.Map<List<UserVM>>(friends));
         }
 
@@ -117,7 +117,7 @@ namespace AngularCore.Controllers
             {
                 return NotFound(new ErrorMessage("User not found"));
             }
-            return Ok(_mapper.Map<PostVM>(user.Posts));
+            return Ok(_mapper.Map<List<PostVM>>(user.Posts));
         }
 
         [HttpPost("{userId}/posts")]
@@ -135,8 +135,7 @@ namespace AngularCore.Controllers
             };
             owner.Posts.Add(post);
             _userRepository.Update(owner);
-            // TODO return actual object with created item
-            return Created("AddUserPost", _mapper.Map<PostVM>(post));
+            return Created($"/users/{userId}/posts/{post.Id}", _mapper.Map<PostVM>(post));
         }
     }
 }

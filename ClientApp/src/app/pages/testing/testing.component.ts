@@ -19,7 +19,7 @@ export class TestingComponent {
 
   public testAuthEndpoint() {
     this.authTest = true;
-    this.http.get<User[]>('/api/User/GetAllUsers').toPromise()
+    this.http.get<User[]>('/api/v1/users/').toPromise()
     .then( response => {
       this.users = response;
     }).catch( error => {
@@ -27,10 +27,10 @@ export class TestingComponent {
     })
   }
 
-  public addFriend(friend: User) {
-    this.friendService.addFriend(friend).subscribe(
-      () => window.location.reload(true)
-    );
+  public addFriend(friendId: string) {
+    this.friendService.addFriend(friendId).subscribe( () => {
+      console.log("Friend added!");
+    });
   }
 
 }

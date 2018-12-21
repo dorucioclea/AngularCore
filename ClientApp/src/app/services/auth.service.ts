@@ -1,30 +1,31 @@
 import { User } from './../models/user';
 import { LoginResponse } from './../models/login-response';
 import { RegisterForm } from '../models/register-form';
-import { LoggedUser } from './../models/logged-user';
 import { LoginForm } from './../models/login-form';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { tap, catchError, first } from 'rxjs/operators';
 import { _throw } from 'rxjs/observable/throw';
-import { Subject } from 'rxjs/Subject';
 import * as moment from "moment";
 import { Router } from '@angular/router';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  private authUrl = "/api/Auth";
+  private authUrl = "/api/v1/auth";
   private authTokenFieldName  = 'auth_token';
   private expiresAtFieldName = 'expires_at';
   private loggedUsedFieldName = 'user';
+  public loggedUserSubject : BehaviorSubject<User>;
 
   constructor(
     private http: HttpClient,
     private router: Router
   ) {
+    this.loggedUserSubject = new BehaviorSubject<User>(undefined);
     if(!this.checkIfUserExists()) {
       this.logout();
     }
@@ -33,8 +34,8 @@ export class AuthService {
   public get isLoggedIn()  { return moment().isBefore(this.getExpiration()) }
   public get isLoggedOut() { return !this.isLoggedIn }
 
-  public get loggedUser() : LoggedUser {
-    return JSON.parse(localStorage.getItem(this.loggedUsedFieldName));
+  public get loggedUserValue() {
+    return this.loggedUserSubject.getValue();
   }
 
   public get authToken() : string {
@@ -42,7 +43,7 @@ export class AuthService {
   }
 
   public login(form: LoginForm) {
-    return this.http.post<LoginResponse>(this.authUrl + "/Login", form).pipe(
+    return this.http.post<LoginResponse>(this.authUrl + "/login", form).pipe(
       first(),
       tap(
         data => this.setSession(data)
@@ -54,7 +55,7 @@ export class AuthService {
   }
 
   public register(form: RegisterForm) {
-    return this.http.post<LoginResponse>(this.authUrl + "/Register", form).pipe(
+    return this.http.post<LoginResponse>(this.authUrl + "/register", form).pipe(
       first(),
       tap(
         data => this.setSession(data)
@@ -66,13 +67,13 @@ export class AuthService {
   }
 
   public async checkIfUserExists(userId?: string) {
-    if( !userId && this.loggedUser ) {
-      userId = this.loggedUser.id;
+    if( !userId && this.loggedUserValue ) {
+      userId = this.loggedUserValue.id;
     }
 
     if( userId ){
       try {
-        await this.http.get<User>("/api/User/GetUser/" + userId).toPromise();
+        await this.http.get<User>("/api/v1/users/" + userId).toPromise();
         console.log("User with id: [" + userId + "] exists");
         this.renewSession()
         return true
@@ -91,9 +92,10 @@ export class AuthService {
   }
 
   private renewSession() {
-    this.http.get<LoginResponse>(this.authUrl + "/RenewSession/").toPromise()
+    this.http.get<LoginResponse>(this.authUrl + "/renew").toPromise()
       .then( user => {
         this.setSession(user);
+        debugger;
       }).catch( () => {
         this.logout();
       })
@@ -107,9 +109,9 @@ export class AuthService {
 
   private setSession(authResult: LoginResponse) {
     const expiresAt = moment().add(authResult.expiresIn, 'second');
-    localStorage.setItem(this.loggedUsedFieldName, JSON.stringify(authResult.user));
     localStorage.setItem(this.authTokenFieldName, authResult.jwtToken);
     localStorage.setItem(this.expiresAtFieldName, JSON.stringify(expiresAt.valueOf()));
+    this.loggedUserSubject.next(authResult.user);
   }
 
   public clearSession() {

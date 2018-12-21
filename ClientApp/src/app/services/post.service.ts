@@ -8,13 +8,13 @@ import { first } from 'rxjs/operators';
 })
 export class PostService {
 
-  postUrl = "/api/Post";
+  postUrl = "/api/v1/posts";
 
   constructor(
     private http: HttpClient
   ) { }
 
-  public getUserPosts(userId: string) {
-    return this.http.get<Post[]>(this.postUrl + "/GetUserPosts/" + userId).pipe( first() );
+  public getAllPosts() {
+    return this.http.get<Post[]>(this.postUrl).pipe( first() );
   }
 }

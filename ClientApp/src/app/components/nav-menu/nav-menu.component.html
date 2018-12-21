@@ -1,5 +1,5 @@
 <mat-sidenav-container class="container">
-  <mat-sidenav #sidenav [(mode)]="over" [(opened)]="opened" *ngIf="loggedUser as user">
+  <mat-sidenav #sidenav [(mode)]="over" [(opened)]="opened" *ngIf="(loggedUser$ | async) as user">
     <mat-card>
       <mat-card-content fxLayout="column" fxLayoutAlign="center center" fxLayoutGap="2px">
         <div style="padding: 20px;">
@@ -10,7 +10,7 @@
             </a>
           </div>
         </div>
-        <a mat-button (click)="linkClick()" [routerLink]='["/profile", loggedUser.id]'>
+        <a mat-button (click)="linkClick()" [routerLink]='["/profile", user.id]'>
           {{user?.name}} {{user?.surname}}
         </a>
         <span style="font-size: 11px">{{user?.email}}</span>
@@ -24,12 +24,12 @@
       <a mat-list-item (click)="linkClick()" [routerLink]='["/post"]' routerLinkActive="link-active">Post</a>
       <a mat-list-item (click)="linkClick()" [routerLink]='["/testing"]' routerLinkActive="link-active" style="color: red;">TESTING</a>
     </mat-nav-list>
-    <app-friend-list [friends]="userFriends"></app-friend-list>
+    <app-friend-list [friends]="user.friends"></app-friend-list>
   </mat-sidenav>
 
   <mat-sidenav-content>
     <mat-toolbar color="primary" class="header-box-shadow">
-      <button mat-icon-button (click)="toggleSideNav()" *ngIf="loggedUser">
+      <button mat-icon-button (click)="toggleSideNav()" *ngIf="(loggedUser$ | async) as user">
         <mat-icon>menu</mat-icon>
       </button>
       <button mat-button [routerLink]='["/"]'>
@@ -37,7 +37,7 @@
         SocialMedia App :)
       </button>
       <span class="spacer"></span>
-      <div *ngIf="loggedUser; let user">
+      <div *ngIf="(loggedUser$ | async ) as user; else loginButton">
         <div fxShow.lt-md="false" fxShow.gt-sm="true">
           <button mat-button>
             <mat-icon>account_circle</mat-icon>
@@ -53,7 +53,7 @@
             <mat-icon>account_circle</mat-icon>
           </button>
           <mat-menu #accToolbarMenu="matMenu" overlapTrigger="false">
-            <button mat-menu-item [routerLink]="['/profile', loggedUser.id]">
+            <button mat-menu-item [routerLink]="['/profile', user.id]">
               <mat-icon>account_circle</mat-icon>
               <span>{{user?.name}} {{user?.surname}}</span>
             </button>
@@ -64,7 +64,7 @@
           </mat-menu>
         </div>
       </div>
-      <div *ngIf="!loggedUser">
+      <ng-template #loginButton>
         <button mat-icon-button [routerLink]="['/auth']" fxShow.lt-md="true" fxShow.gt-sm="false">
           <mat-icon>account_circle</mat-icon>
         </button>
@@ -72,7 +72,7 @@
           <mat-icon>account_circle</mat-icon>
           <span> Login </span>
         </button>
-      </div>
+      </ng-template>
     </mat-toolbar>
     <ng-content></ng-content>
   </mat-sidenav-content>

@@ -1,9 +1,9 @@
-import { LoggedUser } from './logged-user';
+import { User } from './user';
 
 export class LoginResponse {
 
   constructor(
-    public user: LoggedUser,
+    public user: User,
     public jwtToken: string,
     public expiresIn: string
   ){}

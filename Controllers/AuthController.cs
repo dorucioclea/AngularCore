@@ -7,24 +7,27 @@ using System.Linq;
 using AngularCore.Repositories;
 using AngularCore.Services;
 using Microsoft.AspNetCore.Authorization;
+using AutoMapper;
 
 namespace AngularCore.Controllers
 {
 
-    [Route("api/[controller]")]
+    [Route("api/v1/auth")]
     public class AuthController : Controller
     {
 
         private IUserRepository _userRepository;
         private IAuthService _authService;
+        private IMapper _mapper;
 
-        public AuthController(IUserRepository userRepository, IAuthService authService)
+        public AuthController(IUserRepository userRepository, IAuthService authService, IMapper mapper)
         {
             _userRepository = userRepository;
             _authService = authService;
+            _mapper = mapper;
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("login")]
         [ProducesResponseType(typeof(LoginResponse), 200)]
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Login([FromBody] LoginForm form)
@@ -38,7 +41,7 @@ namespace AngularCore.Controllers
             return Ok(GenerateLoginResponse(userFound));
         }
 
-        [HttpPost("[action]")]
+        [HttpPost("register")]
         [ProducesResponseType(typeof(LoginResponse), 201)]
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult Register([FromBody] RegisterForm form)
@@ -58,11 +61,11 @@ namespace AngularCore.Controllers
             };
             _userRepository.Add(newUser);
 
-            return CreatedAtAction("Register", GenerateLoginResponse(newUser));
+            return CreatedAtAction($"/api/v1/users/{newUser.Id}", GenerateLoginResponse(newUser));
         }
 
         [Authorize]
-        [HttpGet("[action]")]
+        [HttpGet("renew")]
         [ProducesResponseType(typeof(LoginResponse), 200)]
         public LoginResponse RenewSession()
         {
@@ -73,15 +76,8 @@ namespace AngularCore.Controllers
 
         private LoginResponse GenerateLoginResponse(User user)
         {
-            LoggedUser loggedUser = new LoggedUser(){
-                Id = user.Id,
-                Name = user.Name,
-                Surname = user.Surname,
-                Email = user.Email
-            };
-
             return new LoginResponse(){
-                User = loggedUser,
+                User = _mapper.Map<DetailedUserVM>(user),
                 JwtToken = _authService.GenerateJWTToken(user),
                 ExpiresIn = TimeSpan.FromDays(_authService.TokenValidityPeriod).TotalSeconds.ToString()
             };

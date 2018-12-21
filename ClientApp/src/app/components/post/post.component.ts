@@ -1,3 +1,4 @@
+import { UserService } from './../../services/user.service';
 import { SpinnerOverlayService } from './../../services/spinner-overlay.service';
 import { AuthService } from './../../services/auth.service';
 import { HttpClient } from '@angular/common/http';
@@ -15,17 +16,14 @@ export class PostComponent {
 
   postForm: PostForm;
 
-  constructor(private http: HttpClient,
-              private router: Router,
-              private authService: AuthService,
-              private spinnerService: SpinnerOverlayService) { }
+  constructor(private router: Router,
+              private spinnerService: SpinnerOverlayService,
+              private userService: UserService) { }
 
   addPost(postForm: NgForm) {
     this.spinnerService.show();
-    this.postForm = postForm.value;
-    this.postForm.ownerId = this.authService.loggedUser.id;
-    this.http.post<Post>("/api/Post/CreatePost", this.postForm).toPromise()
-      .then( result => {
+    this.userService.createUserPost(postForm.value).toPromise()
+      .then( () => {
         this.router.navigate(["/"]);
         this.spinnerService.hide();
       })

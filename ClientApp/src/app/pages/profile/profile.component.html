@@ -1,25 +1,23 @@
-<div *ngIf="profile$ | async as profile; else loading">
+<div *ngIf="(profile$ | async) as profile; else loading">
   <div fxLayout="row wrap" fxLayoutAlign="center start" fxLayoutGap="20px grid">
     <div fxFlex="30" fxFlex.lt-sm="80" fxLayout="column" fxLayoutGap="10px">
       <app-user-profile [user]="profile"></app-user-profile>
-      <app-friend-list [friends]="friends$ | async" fxShow.gt-xs="true" fxShow.lt-sm="false"></app-friend-list>
+      <app-friend-list [friends]="profile.friends" fxShow.gt-xs="true" fxShow.lt-sm="false"></app-friend-list>
     </div>
 
     <div fxFlex="70" fxFlex.lt-sm="80">
-      <div *ngIf="postsLoaded; else loading">
-        <div *ngIf="(posts$ | async) as posts; else noPosts">
-          <app-post-list [posts]="posts"></app-post-list>
-        </div>
-
-        <ng-template #noPosts>
-          <mat-card>
-            <mat-card-content style="text-align: center;">
-              <mat-card-title>Sorry!</mat-card-title>
-              <mat-card-subtitle>This user doesn't have any posts yet!</mat-card-subtitle>
-            </mat-card-content>
-          </mat-card>
-        </ng-template>
+      <div *ngIf="profile.posts.length > 0; else noPosts">
+        <app-post-list [posts]="profile.posts"></app-post-list>
       </div>
+
+      <ng-template #noPosts>
+        <mat-card>
+          <mat-card-content style="text-align: center;">
+            <mat-card-title>Sorry!</mat-card-title>
+            <mat-card-subtitle>This user doesn't have any posts yet!</mat-card-subtitle>
+          </mat-card-content>
+        </mat-card>
+      </ng-template>
     </div>
 
   </div>

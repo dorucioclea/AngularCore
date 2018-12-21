@@ -16,8 +16,8 @@ export class FriendListComponent implements OnInit {
   ngOnInit() {
   }
 
-  public removeFriend(friend: User){
-    this.friendService.removeFriend(friend).subscribe(
+  public removeFriend(friendId: string){
+    this.friendService.removeFriend(friendId).subscribe(
       () => window.location.reload(true)
     );
   }

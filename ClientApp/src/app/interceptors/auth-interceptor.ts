@@ -20,6 +20,10 @@ export class AuthInterceptor implements HttpInterceptor {
       });
     }
 
+    request = request.clone({
+      headers: request.headers.set("Content-Type", "application/json")
+    })
+
     return next.handle(request).pipe( catchError( err => {
       if( err.status === 401 ) {
         localStorage.removeItem('auth_token');

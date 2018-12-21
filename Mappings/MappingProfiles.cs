@@ -16,6 +16,10 @@ namespace AngularCore.Mappings
                 ).ReverseMap();
             CreateMap<User, UserVM>().ReverseMap();
             CreateMap<User, string>().ConvertUsing( u => u.Id );
+            CreateMap<User, DetailedUserVM>().ForMember(
+                du => du.Friends,
+                opt => opt.MapFrom( src => src.Friends)
+            ).ReverseMap();
         }
     }
 }
