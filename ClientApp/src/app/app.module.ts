@@ -24,6 +24,7 @@ import { RegisterFormComponent } from './pages/auth/components/register-form/reg
 import { UserProfileComponent } from './pages/profile/components/user-profile/user-profile.component';
 import { PostListComponent } from './components/post-list/post-list.component';
 import { FriendListComponent } from './pages/profile/components/friend-list/friend-list.component';
+import { FriendsComponent } from './pages/friends/friends/friends.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +40,8 @@ import { FriendListComponent } from './pages/profile/components/friend-list/frie
     RegisterFormComponent,
     UserProfileComponent,
     PostListComponent,
-    FriendListComponent
+    FriendListComponent,
+    FriendsComponent
   ],
   imports: [
     BrowserModule.withServerTransition({ appId: 'ng-cli-universal' }),
@@ -54,6 +56,7 @@ import { FriendListComponent } from './pages/profile/components/friend-list/frie
       { path: 'auth', component: AuthComponent },
       { path: 'post', component: PostComponent, canActivate: [AuthGuard] },
       { path: 'profile/:id', component: ProfileComponent, canActivate: [AuthGuard] },
+      { path: 'friends', component: FriendsComponent, canActivate: [AuthGuard] },
       { path: '**', redirectTo: '' }
     ])
   ],

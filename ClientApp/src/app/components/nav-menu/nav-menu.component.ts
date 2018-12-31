@@ -1,7 +1,5 @@
-import { FriendService } from './../../services/friend.service';
 import { AuthService } from './../../services/auth.service';
 import { Component, ViewChild, OnInit} from '@angular/core';
-import { LoggedUser } from '../../models/logged-user';
 import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material';
@@ -25,11 +23,9 @@ export class NavMenuComponent implements OnInit {
 
   watcher: Subscription;
   loggedUser$: Observable<User>;
-  userFriends$: Observable<User[]>;
 
   constructor(
     public authService: AuthService,
-    private friendService: FriendService,
     private media: ObservableMedia
   ) {
     this.watcher = media.subscribe((change: MediaChange) => {

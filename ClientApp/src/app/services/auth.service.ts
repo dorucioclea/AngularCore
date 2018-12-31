@@ -16,9 +16,11 @@ import { BehaviorSubject } from 'rxjs';
 export class AuthService {
 
   private authUrl = "/api/v1/auth";
+
   private authTokenFieldName  = 'auth_token';
   private expiresAtFieldName = 'expires_at';
-  private loggedUsedFieldName = 'user';
+  private uidFieldName = 'UID';
+
   public loggedUserSubject : BehaviorSubject<User>;
 
   constructor(
@@ -26,7 +28,7 @@ export class AuthService {
     private router: Router
   ) {
     this.loggedUserSubject = new BehaviorSubject<User>(undefined);
-    if(!this.checkIfUserExists()) {
+    if(!this.checkForSavedUser()) {
       this.logout();
     }
   }
@@ -85,6 +87,25 @@ export class AuthService {
     return false;
   }
 
+  private async checkForSavedUser() {
+    let userId = localStorage.getItem(this.uidFieldName);
+
+    if(!userId) {
+      return false;
+    }
+
+    try {
+      await this.http.get<User>("/api/v1/users/" + userId).toPromise();
+      console.log("User with id: [" + userId + "] exists");
+      this.renewSession()
+    } catch(err) {
+      console.log("User fetch error: " + err);
+      return false;
+    }
+
+    return true;
+  }
+
   public logout() {
     this.clearSession();
     console.log("Logging out!");
@@ -95,7 +116,6 @@ export class AuthService {
     this.http.get<LoginResponse>(this.authUrl + "/renew").toPromise()
       .then( user => {
         this.setSession(user);
-        debugger;
       }).catch( () => {
         this.logout();
       })
@@ -110,12 +130,13 @@ export class AuthService {
   private setSession(authResult: LoginResponse) {
     const expiresAt = moment().add(authResult.expiresIn, 'second');
     localStorage.setItem(this.authTokenFieldName, authResult.jwtToken);
+    localStorage.setItem(this.uidFieldName, authResult.user.id);
     localStorage.setItem(this.expiresAtFieldName, JSON.stringify(expiresAt.valueOf()));
     this.loggedUserSubject.next(authResult.user);
   }
 
   public clearSession() {
-    localStorage.removeItem(this.loggedUsedFieldName);
+    localStorage.removeItem(this.uidFieldName);
     localStorage.removeItem(this.authTokenFieldName);
     localStorage.removeItem(this.expiresAtFieldName);
   }
