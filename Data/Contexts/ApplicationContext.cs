@@ -19,7 +19,7 @@ namespace AngularCore.Data.Contexts
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.Entity<UserFriends>()
-                .HasKey( uf => new {uf.UserId, uf.FriendId});
+                .HasKey( uf => new {uf.UserId, uf.FriendId} );
             modelBuilder.Entity<UserFriends>()
                 .HasOne( uf => uf.User )
                 .WithMany( u => u.UserFriends )
@@ -33,14 +33,20 @@ namespace AngularCore.Data.Contexts
             modelBuilder.Entity<Post>()
                 .HasKey( p => p.Id );
             modelBuilder.Entity<Post>()
-                .HasOne( p => p.User )
+                .HasOne( p => p.Author )
                 .WithMany( u => u.Posts )
-                .OnDelete(DeleteBehavior.Cascade);
+                .HasForeignKey( p => p.AuthorId )
+                .OnDelete( DeleteBehavior.Cascade );
+            modelBuilder.Entity<Post>()
+                .HasOne( p => p.WallOwner )
+                .WithMany( u => u.WallPosts )
+                .HasForeignKey( p => p.WallOwnerId )
+                .OnDelete( DeleteBehavior.Cascade );
 
             modelBuilder.Entity<Comment>()
                 .HasOne( c => c.User )
                 .WithMany( u => u.Comments )
-                .OnDelete(DeleteBehavior.Restrict);
+                .OnDelete( DeleteBehavior.Restrict );
         }
 
         public override int SaveChanges()

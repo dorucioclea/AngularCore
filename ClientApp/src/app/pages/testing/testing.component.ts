@@ -28,9 +28,7 @@ export class TestingComponent {
   }
 
   public addFriend(friendId: string) {
-    this.friendService.addFriend(friendId).subscribe( () => {
-      console.log("Friend added!");
-    });
+    this.friendService.addFriend(friendId);
   }
 
 }

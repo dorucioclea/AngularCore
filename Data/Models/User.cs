@@ -34,6 +34,8 @@ namespace AngularCore.Data.Models
 
         public List<Post> Posts { get; set; } = new List<Post>();
 
+        public List<Post> WallPosts { get; set; } = new List<Post>();
+
         public void AddFriend(User friend)
         {
             UserFriends.Add( new UserFriends( user: this, friend: friend ) );

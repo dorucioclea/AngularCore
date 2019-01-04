@@ -1,4 +1,4 @@
-import { FriendService } from './../../../../services/friend.service';
+import { FriendService } from '@app/services/friend.service';
 import { Component, OnInit, Input } from '@angular/core';
 import { User } from '@app/models/user';
 
@@ -17,9 +17,7 @@ export class FriendListComponent implements OnInit {
   }
 
   public removeFriend(friendId: string){
-    this.friendService.removeFriend(friendId).subscribe(
-      () => window.location.reload(true)
-    );
+    this.friendService.removeFriend(friendId);
   }
 
 }

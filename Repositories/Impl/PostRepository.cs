@@ -11,7 +11,8 @@ namespace AngularCore.Repositories.Impl
 
         public override IQueryable<Post> GetAll()
         {
-            return Entity.Include( p => p.User ).AsQueryable();
+            return Entity.Include( p => p.Author )
+                         .Include( p => p.WallOwner ).AsQueryable();
         }
     }
 }

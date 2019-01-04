@@ -52,14 +52,21 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 404)]
         public IActionResult CreatePost([FromBody] PostForm form)
         {
-            var user = _userRepository.GetById(form.OwnerId);
+            var user = _userRepository.GetById(form.AuthorId);
             if(user == null)
             {
                 return NotFound(new ErrorMessage("User not found"));
             }
 
+            var wallOwner = _userRepository.GetById(form.WallOwnerId);
+            if(wallOwner == null)
+            {
+                return NotFound(new ErrorMessage("Wall owner not found"));
+            }
+
             var post = new Post {
-                User = user,
+                Author = user,
+                WallOwner = wallOwner,
                 Content = form.Content
             };
 

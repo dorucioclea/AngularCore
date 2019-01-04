@@ -3,5 +3,13 @@
     <img mat-card-image src="../../../assets/images/default-profile-pic.png">
     <mat-card-title>{{user.name}} {{user.surname}}</mat-card-title>
     <mat-card-subtitle>{{user.email}}</mat-card-subtitle>
+    <mat-card-footer container="row" *ngIf="!selfProfile">
+      <button mat-raised-button color="primary" *ngIf="!isInFriendList" (click)="addFriend()" fxFlex="100">
+        Add Friend
+      </button>
+      <button mat-raised-button color="accent" *ngIf="isInFriendList" (click)="removeFriend()" fxFlex="100">
+        Remove Friend
+      </button>
+    </mat-card-footer>
   </mat-card-content>
 </mat-card>

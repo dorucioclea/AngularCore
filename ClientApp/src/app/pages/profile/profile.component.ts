@@ -1,9 +1,9 @@
 import { UserService } from './../../services/user.service';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { Component, OnInit } from '@angular/core';
-import { switchMap } from 'rxjs/operators';
 import { User } from '../../models/user';
 import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 
 @Component({
   selector: 'app-profile',
@@ -16,19 +16,15 @@ export class ProfileComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private userService: UserService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
-    // this.profile$ = this.route.paramMap.pipe(
-    //   switchMap( params => {
-    //     return this.userService.getUser(params.get('id'));
-    //   })
-    // );
-    this.profile$ = this.userService.getUser("dd53af61-656f-45ce-8d3d-c6ff7c501985");
-    this.profile$.subscribe( user => {
-      console.log("Profile obtained: ", user);
-    })
+    this.profile$ = this.route.paramMap.pipe(
+      switchMap( (params: ParamMap) => {
+        return this.userService.getUser(params.get('id'));
+      })
+    );
   }
 
 }

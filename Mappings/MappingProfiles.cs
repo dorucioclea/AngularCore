@@ -9,11 +9,7 @@ namespace AngularCore.Mappings
     {
         public MappingProfiles()
         {
-            CreateMap<Post, PostVM>()
-                .ForMember(
-                    pvm => pvm.Owner,
-                    opt => opt.MapFrom( p => p.User )
-                ).ReverseMap();
+            CreateMap<Post, PostVM>().ReverseMap();
             CreateMap<User, UserVM>().ReverseMap();
             CreateMap<User, string>().ConvertUsing( u => u.Id );
             CreateMap<User, DetailedUserVM>().ForMember(
