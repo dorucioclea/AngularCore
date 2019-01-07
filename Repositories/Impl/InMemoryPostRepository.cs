@@ -38,7 +38,7 @@ namespace AngularCore.Repositories.Impl
 
         public List<Post> GetPostsForUser(User user)
         {
-            return _posts.FindAll( p => p.User.Id.Equals(user.Id));
+            return _posts.FindAll( p => p.Author.Id.Equals(user.Id));
         }
 
         public void UpdatePost(Post post)

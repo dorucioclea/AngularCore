@@ -13,7 +13,7 @@ import { AuthComponent } from './pages/auth/auth.component';
 import { SpinnerOverlayComponent } from './components/spinner-overlay/spinner-overlay.component';
 import { NavMenuComponent } from './components/nav-menu/nav-menu.component';
 import { SharedUIModule } from './modules/shared-ui/shared-ui.module';
-import { PostComponent } from './components/post/post.component';
+import { PostComponent } from './pages/profile/components/post/post.component';
 import { AppComponent } from './app.component';
 import { ProfileComponent } from './pages/profile/profile.component';
 import { LoginFormComponent } from './pages/auth/components/login-form/login-form.component';
@@ -23,6 +23,7 @@ import { PostListComponent } from './components/post-list/post-list.component';
 import { FriendListComponent } from './components/friend-list/friend-list.component';
 import { FriendsComponent } from './pages/friends/friends.component';
 import { AppRoutingModule } from './app-routing.module';
+import { AppLoadModule } from './app-load.module';
 
 @NgModule({
   declarations: [
@@ -48,7 +49,8 @@ import { AppRoutingModule } from './app-routing.module';
     ReactiveFormsModule,
     BrowserAnimationsModule,
     SharedUIModule,
-    AppRoutingModule
+    AppRoutingModule,
+    // AppLoadModule
   ],
   providers: [
     { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true }

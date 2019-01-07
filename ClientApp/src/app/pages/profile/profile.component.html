@@ -5,7 +5,8 @@
       <app-friend-list [friends]="profile.friends" fxShow.gt-xs="true" fxShow.lt-sm="false"></app-friend-list>
     </div>
 
-    <div fxFlex="60%" fxFlex.lt-sm="80">
+    <div fxFlex="60%" fxFlex.lt-sm="80" fxLayout="column" fxLayoutGap="20px">
+      <app-post [wallOwnerId]="profile.id"></app-post>
       <div *ngIf="profile.posts.length > 0; else noPosts">
         <app-post-list [posts]="profile.posts"></app-post-list>
       </div>

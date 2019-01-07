@@ -4,7 +4,8 @@ export class Post {
 
   constructor(
     public id: string,
-    public owner: User,
+    public author: User,
+    public wallOwner: User,
     public content: string,
     public modifiedAt: Date,
     public createdAt: Date

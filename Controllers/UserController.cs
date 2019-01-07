@@ -117,7 +117,8 @@ namespace AngularCore.Controllers
             {
                 return NotFound(new ErrorMessage("User not found"));
             }
-            return Ok(_mapper.Map<List<PostVM>>(user.Posts));
+            var posts = user.Posts.Union(user.WallPosts);
+            return Ok(_mapper.Map<List<PostVM>>(posts));
         }
 
         [HttpPost("{userId}/posts")]
@@ -125,15 +126,24 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 400)]
         public IActionResult AddUserPost(string userId, [FromBody] PostForm form)
         {
+            var author = _userRepository.GetById(User.Identity.Name);
+            if( author == null )
+            {
+                return BadRequest(new ErrorMessage("Author does not exist"));
+            }
+
             var owner = _userRepository.GetById(userId);
-            if( owner == null ) {
+            if( owner == null )
+            {
                 return BadRequest(new ErrorMessage("User does not exist"));
             }
 
             Post post = new Post {
-                Content = form.Content
+                Content = form.Content,
+                Author = author
             };
-            owner.Posts.Add(post);
+            
+            owner.WallPosts.Add(post);
             _userRepository.Update(owner);
             return Created($"/users/{userId}/posts/{post.Id}", _mapper.Map<PostVM>(post));
         }

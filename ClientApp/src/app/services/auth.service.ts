@@ -33,7 +33,10 @@ export class AuthService {
     }
   }
 
-  public get isLoggedIn()  { return moment().isBefore(this.getExpiration()) }
+  public get isLoggedIn() {
+    return moment().isBefore(this.getExpiration())
+  }
+
   public get isLoggedOut() { return !this.isLoggedIn }
 
   public get loggedUserValue() {
@@ -121,6 +124,15 @@ export class AuthService {
       })
   }
 
+  public renewOrClearSession() {
+    this.http.get<LoginResponse>(this.authUrl + "/renew").toPromise()
+      .then( user => {
+        this.setSession(user);
+      }).catch( () => {
+        this.clearSession();
+      })
+  }
+
   private getExpiration() {
     const expiration = localStorage.getItem(this.expiresAtFieldName);
     const expiresAt = JSON.parse(expiration);
@@ -139,6 +151,7 @@ export class AuthService {
     localStorage.removeItem(this.uidFieldName);
     localStorage.removeItem(this.authTokenFieldName);
     localStorage.removeItem(this.expiresAtFieldName);
+    this.loggedUserSubject.next(undefined);
   }
 
   private handleError(where: string, why: HttpErrorResponse, what?: any) {

@@ -36,7 +36,7 @@ namespace AngularCore.Data.Contexts
                 .HasOne( p => p.Author )
                 .WithMany( u => u.Posts )
                 .HasForeignKey( p => p.AuthorId )
-                .OnDelete( DeleteBehavior.Cascade );
+                .OnDelete( DeleteBehavior.Restrict );
             modelBuilder.Entity<Post>()
                 .HasOne( p => p.WallOwner )
                 .WithMany( u => u.WallPosts )

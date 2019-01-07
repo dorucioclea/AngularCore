@@ -4,7 +4,8 @@
       <mat-card-header>
         <img mat-card-avatar src="../../../assets/images/default-profile-pic.png" />
         <mat-card-title>
-          {{post.owner.name}} {{post.owner.surname}}
+          To: {{post.wallOwner.name}} {{post.wallOwner.surname}} |
+          From: {{post.author.name}} {{post.author.surname}}
         </mat-card-title>
         <mat-card-subtitle>{{post.createdAt | date}}</mat-card-subtitle>
       </mat-card-header>

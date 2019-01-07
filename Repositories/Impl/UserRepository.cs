@@ -19,6 +19,7 @@ namespace AngularCore.Repositories.Impl
                 .Include( u => u.UserFriends )
                     .ThenInclude( fu => fu.Friend )
                 .Include( u => u.Posts )
+                .Include( u => u.WallPosts )
                 .SingleOrDefault( u => u.Id.Equals(id) );
         }
     }

@@ -52,6 +52,9 @@ namespace AngularCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId")
+                        .IsRequired();
+
                     b.Property<string>("Content")
                         .IsRequired();
 
@@ -62,12 +65,14 @@ namespace AngularCore.Migrations
 
                     b.Property<DateTime?>("ModifiedAt");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("WallOwnerId")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("WallOwnerId");
 
                     b.ToTable("Posts");
 
@@ -146,9 +151,14 @@ namespace AngularCore.Migrations
 
             modelBuilder.Entity("AngularCore.Data.Models.Post", b =>
                 {
-                    b.HasOne("AngularCore.Data.Models.User", "User")
+                    b.HasOne("AngularCore.Data.Models.User", "Author")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AngularCore.Data.Models.User", "WallOwner")
+                        .WithMany("WallPosts")
+                        .HasForeignKey("WallOwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

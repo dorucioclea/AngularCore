@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace AngularCore.Migrations
 {
     [DbContext(typeof(ApplicationContext))]
-    [Migration("20181214143743_Remove_Required_on_CreatedAt_fields_fix")]
-    partial class Remove_Required_on_CreatedAt_fields_fix
+    [Migration("20190107074610_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -30,13 +30,9 @@ namespace AngularCore.Migrations
                         .IsRequired()
                         .HasMaxLength(256);
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime>("CreatedAt");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime?>("ModifiedAt");
 
                     b.Property<string>("PostId")
                         .IsRequired();
@@ -58,26 +54,27 @@ namespace AngularCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<string>("AuthorId")
+                        .IsRequired();
+
                     b.Property<string>("Content")
                         .IsRequired();
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Discriminator")
                         .IsRequired();
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime?>("ModifiedAt");
 
-                    b.Property<string>("UserId")
+                    b.Property<string>("WallOwnerId")
                         .IsRequired();
 
                     b.HasKey("Id");
 
-                    b.HasIndex("UserId");
+                    b.HasIndex("AuthorId");
+
+                    b.HasIndex("WallOwnerId");
 
                     b.ToTable("Posts");
 
@@ -89,16 +86,12 @@ namespace AngularCore.Migrations
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime>("CreatedAt");
 
                     b.Property<string>("Email")
                         .IsRequired();
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime?>("ModifiedAt");
 
                     b.Property<string>("Name");
 
@@ -122,13 +115,9 @@ namespace AngularCore.Migrations
 
                     b.Property<string>("FriendId");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime>("CreatedAt");
 
-                    b.Property<DateTime?>("ModifiedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate();
+                    b.Property<DateTime?>("ModifiedAt");
 
                     b.HasKey("UserId", "FriendId");
 
@@ -164,9 +153,14 @@ namespace AngularCore.Migrations
 
             modelBuilder.Entity("AngularCore.Data.Models.Post", b =>
                 {
-                    b.HasOne("AngularCore.Data.Models.User", "User")
+                    b.HasOne("AngularCore.Data.Models.User", "Author")
                         .WithMany("Posts")
-                        .HasForeignKey("UserId")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("AngularCore.Data.Models.User", "WallOwner")
+                        .WithMany("WallPosts")
+                        .HasForeignKey("WallOwnerId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

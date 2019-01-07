@@ -13,7 +13,7 @@ namespace AngularCore.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     UserId = table.Column<string>(nullable: false),
                     PostId = table.Column<string>(nullable: false),
                     Content = table.Column<string>(maxLength: 256, nullable: false)
@@ -29,7 +29,7 @@ namespace AngularCore.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
                     Email = table.Column<string>(nullable: false),
                     Password = table.Column<string>(nullable: false),
                     Name = table.Column<string>(nullable: true),
@@ -47,8 +47,9 @@ namespace AngularCore.Migrations
                 {
                     Id = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: false),
-                    UserId = table.Column<string>(nullable: false),
+                    ModifiedAt = table.Column<DateTime>(nullable: true),
+                    AuthorId = table.Column<string>(nullable: false),
+                    WallOwnerId = table.Column<string>(nullable: false),
                     Content = table.Column<string>(nullable: false),
                     Discriminator = table.Column<string>(nullable: false),
                     MediaUrl = table.Column<string>(nullable: true)
@@ -57,8 +58,14 @@ namespace AngularCore.Migrations
                 {
                     table.PrimaryKey("PK_Posts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Posts_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Posts_Users_AuthorId",
+                        column: x => x.AuthorId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                    table.ForeignKey(
+                        name: "FK_Posts_Users_WallOwnerId",
+                        column: x => x.WallOwnerId,
                         principalTable: "Users",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -71,7 +78,7 @@ namespace AngularCore.Migrations
                     UserId = table.Column<string>(nullable: false),
                     FriendId = table.Column<string>(nullable: false),
                     CreatedAt = table.Column<DateTime>(nullable: false),
-                    ModifiedAt = table.Column<DateTime>(nullable: false)
+                    ModifiedAt = table.Column<DateTime>(nullable: true)
                 },
                 constraints: table =>
                 {
@@ -102,9 +109,14 @@ namespace AngularCore.Migrations
                 column: "UserId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Posts_UserId",
+                name: "IX_Posts_AuthorId",
                 table: "Posts",
-                column: "UserId");
+                column: "AuthorId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Posts_WallOwnerId",
+                table: "Posts",
+                column: "WallOwnerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_ProfilePictureId",

@@ -52,7 +52,7 @@ namespace AngularCore.Controllers
         [ProducesResponseType(typeof(ErrorMessage), 404)]
         public IActionResult CreatePost([FromBody] PostForm form)
         {
-            var user = _userRepository.GetById(form.AuthorId);
+            var user = _userRepository.GetById(User.Identity.Name);
             if(user == null)
             {
                 return NotFound(new ErrorMessage("User not found"));
