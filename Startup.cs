@@ -2,17 +2,16 @@ using AngularCore.Helpers;
 using AngularCore.Repositories;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using AngularCore.Extensions;
 using AngularCore.Services;
 using AngularCore.Repositories.Impl;
 using AutoMapper;
 using AngularCore.Data.Contexts;
+using Microsoft.EntityFrameworkCore;
 
 namespace AngularCore
 {
@@ -33,8 +32,9 @@ namespace AngularCore
 
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+                
             services.AddDbContext<ApplicationContext>( options =>
-                options.UseSqlServer(appSettingsSection.GetValue<string>("DbConnection"))
+                options.UseMySql(appSettingsSection.GetValue<string>("DbConnection"))
             );
             services.AddAutoMapper();
             services.AddCustomJwt(appSettingsSection.GetValue<string>("Secret"));

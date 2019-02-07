@@ -8,7 +8,7 @@
     <div fxFlex="60%" fxFlex.lt-sm="80" fxLayout="column" fxLayoutGap="20px">
       <app-post [wallOwnerId]="profile.id"></app-post>
       <div *ngIf="profile.posts.length > 0; else noPosts">
-        <app-post-list [posts]="profile.posts"></app-post-list>
+        <app-post-list [posts]="profile.posts" [showRecipient]="false"></app-post-list>
       </div>
 
       <ng-template #noPosts>

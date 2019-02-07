@@ -3,10 +3,12 @@
     <mat-card>
       <mat-card-header>
         <img mat-card-avatar src="../../../assets/images/default-profile-pic.png" />
-        <mat-card-title>
-          To: {{post.wallOwner.name}} {{post.wallOwner.surname}} |
-          From: {{post.author.name}} {{post.author.surname}}
-        </mat-card-title>
+        <mat-card-subtitle>
+          {{post.author.name}} {{post.author.surname}}
+          <div *ngIf="showRecipient && post.author?.id != post.wallOwner?.id">
+            >> {{post.wallOwner.name}} {{post.wallOwner.surname}}
+          </div>
+        </mat-card-subtitle>
         <mat-card-subtitle>{{post.createdAt | date}}</mat-card-subtitle>
       </mat-card-header>
       <mat-card-content>
