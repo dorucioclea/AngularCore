@@ -21,7 +21,8 @@ export class AuthService {
   private expiresAtFieldName = 'expires_at';
   private uidFieldName = 'UID';
 
-  public loggedUserSubject : BehaviorSubject<User>;
+  public loggedUserSubject: BehaviorSubject<User>;
+  public isAdmin = true; //TODO
 
   constructor(
     private http: HttpClient,
@@ -133,6 +134,19 @@ export class AuthService {
       })
   }
 
+  public promoteToAdmin(userId) {
+    console.log("Promoting " + userId);
+    return this.http.post(this.authUrl + "/promote", JSON.stringify(userId));
+  }
+
+  public degradeFromAdmin(userId) {
+    return this.http.post(this.authUrl + "/degrade", JSON.stringify(userId));
+  }
+
+  public checkIfAdmin(userId) {
+    return this.http.get(this.authUrl + "/isadmin/" + userId);
+  }
+
   private getExpiration() {
     const expiration = localStorage.getItem(this.expiresAtFieldName);
     const expiresAt = JSON.parse(expiration);
@@ -141,6 +155,7 @@ export class AuthService {
 
   private setSession(authResult: LoginResponse) {
     const expiresAt = moment().add(authResult.expiresIn, 'second');
+    this.isAdmin = authResult.user.isAdmin;
     localStorage.setItem(this.authTokenFieldName, authResult.jwtToken);
     localStorage.setItem(this.uidFieldName, authResult.user.id);
     localStorage.setItem(this.expiresAtFieldName, JSON.stringify(expiresAt.valueOf()));

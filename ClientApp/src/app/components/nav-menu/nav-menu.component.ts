@@ -25,6 +25,8 @@ export class NavMenuComponent implements OnInit, OnDestroy{
   loggedUser$: Observable<User>;
   friendList$: Observable<User[]>;
 
+  public profilePictureUrl: string = "../../../assets/images/default-profile-pic.png";
+
   subscription: Subscription = new Subscription();
 
   constructor(
@@ -49,8 +51,11 @@ export class NavMenuComponent implements OnInit, OnDestroy{
     this.friendList$ = this.friendService.friendsSubject;
     this.loggedUser$ = this.authService.loggedUserSubject;
     this.subscription.add( this.loggedUser$.subscribe( (user: User) => {
-      if(user){
+      if (user) {
         this.friendService.updateFriendlist(user.id);
+        if (user.profilePicture) {
+          this.profilePictureUrl = user.profilePicture.mediaUrl;
+        }
       }
     }));
   }
@@ -70,6 +75,10 @@ export class NavMenuComponent implements OnInit, OnDestroy{
     if(this.over === 'over') {
       this.sidenav.close();
     }
+  }
+
+  public isAdmin() {
+    return this.authService.isAdmin;
   }
 
 }

@@ -41,7 +41,15 @@ namespace AngularCore.Data.Contexts
                 .HasOne( p => p.WallOwner )
                 .WithMany( u => u.WallPosts )
                 .HasForeignKey( p => p.WallOwnerId )
-                .OnDelete( DeleteBehavior.Cascade );
+                .OnDelete( DeleteBehavior.Restrict );
+
+            modelBuilder.Entity<Image>()
+                .HasKey( i => i.Id );
+            modelBuilder.Entity<Image>()
+                .HasOne( i => i.Author )
+                .WithMany( a => a.Images )
+                .HasForeignKey( i => i.AuthorId)
+                .OnDelete( DeleteBehavior.Restrict );
 
             modelBuilder.Entity<Comment>()
                 .HasOne( c => c.User )
@@ -55,7 +63,7 @@ namespace AngularCore.Data.Contexts
             AddedEntities.ForEach( e =>
             {
                 e.Entity.CreatedAt = DateTime.Now;
-                if(e.Entity.GetType() == typeof(BaseEntity))
+                if(e.Entity.GetType() == typeof(BaseEntity) && ((BaseEntity) e.Entity).Id == null)
                 {
                     ((BaseEntity) e.Entity).Id = Guid.NewGuid().ToString();
                 }

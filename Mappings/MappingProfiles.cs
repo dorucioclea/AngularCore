@@ -17,6 +17,8 @@ namespace AngularCore.Mappings
             CreateMap<User, DetailedUserVM>()
                 .ForMember( du => du.Friends, opt => opt.MapFrom( src => src.Friends) )
                 .ForMember( du => du.Posts, opt => opt.MapFrom<UserPostsResolver>());
+            CreateMap<Image, ImageVM>().ReverseMap();
+            CreateMap<Image, AvatarVM>().ReverseMap();
         }
     }
 }

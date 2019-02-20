@@ -1,4 +1,3 @@
-using System;
 using System.Linq;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -18,7 +17,11 @@ namespace AngularCore.Data.Models
 
         public string Surname { get; set; }
 
+        public bool IsAdmin { get; set; } = false;
+
         public Image ProfilePicture { get; set; }
+
+        public List<Image> Images { get; set; }
 
         public List<Comment> Comments { get; set; } = new List<Comment>();
 

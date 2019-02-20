@@ -8,7 +8,7 @@ import { first } from 'rxjs/operators';
 })
 export class PostService {
 
-  postUrl = "/api/v1/posts";
+  postUrl = "/api/v1/posts/";
 
   constructor(
     private http: HttpClient
@@ -16,5 +16,9 @@ export class PostService {
 
   public getAllPosts() {
     return this.http.get<Post[]>(this.postUrl).pipe( first() );
+  }
+
+  public deletePost(postId) {
+    return this.http.delete(this.postUrl + postId);
   }
 }

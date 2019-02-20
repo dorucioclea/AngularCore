@@ -4,6 +4,8 @@ import { Injectable } from '@angular/core';
 import { User } from '../models/user';
 import { Post } from '@app/models/post';
 import { PostForm } from '@app/models/post-form';
+import { Image } from '@app/models/image';
+import { ProfilePictureUpdate } from '@app/models/profile-picture-update';
 
 @Injectable({
   providedIn: 'root'
@@ -32,10 +34,29 @@ export class UserService{
     return this.http.get<Post[]>(this.userUrl + userId + "/posts");
   }
 
+  public getUserImages(userId?: string) {
+    if (!userId) {
+      userId = this.authService.loggedUserValue.id;
+    }
+    return this.http.get<Image[]>(this.userUrl + userId + "/images");
+  }
+
   public createUserPost(post: PostForm, userId?: string) {
     if(!userId) {
       userId = this.authService.loggedUserValue.id;
     }
     return this.http.post<Post>(this.userUrl + userId + "/posts", post);
+  }
+
+  public setUserProfilePicture(imageId: string, userId?: string) {
+    if (!userId) {
+      userId = this.authService.loggedUserValue.id;
+    }
+    var imageUpdate = new ProfilePictureUpdate(imageId = imageId);
+    return this.http.post(this.userUrl + userId + "/avatar", imageUpdate );
+  }
+
+  public deleteUser(userId: string) {
+    return this.http.delete(this.userUrl + userId);
   }
 }

@@ -2,11 +2,13 @@
   <div *ngFor="let post of posts">
     <mat-card>
       <mat-card-header>
-        <img mat-card-avatar src="../../../assets/images/default-profile-pic.png" />
+        <img mat-card-avatar src="{{post.author.profilePicture?.mediaUrl}}" />
         <mat-card-subtitle>
-          {{post.author.name}} {{post.author.surname}}
-          <div *ngIf="showRecipient && post.author?.id != post.wallOwner?.id">
-            >> {{post.wallOwner.name}} {{post.wallOwner.surname}}
+          <div class="display-inline">
+            {{post.author.name}} {{post.author.surname}}
+            <div *ngIf="showRecipient && post.author?.id != post.wallOwner?.id">
+              &nbsp;>>&nbsp;{{post.wallOwner.name}} {{post.wallOwner.surname}}
+            </div>
           </div>
         </mat-card-subtitle>
         <mat-card-subtitle>{{post.createdAt | date}}</mat-card-subtitle>

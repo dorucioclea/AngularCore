@@ -64,6 +64,52 @@ namespace AngularCore.Controllers
             return CreatedAtAction($"/api/v1/users/{newUser.Id}", GenerateLoginResponse(newUser));
         }
 
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost("promote")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public IActionResult PromoteToAdmin([FromBody] string userId)
+        {
+            var user = _userRepository.GetById(userId);
+            if(user == null)
+            {
+                return NotFound();
+            }
+            user.IsAdmin = true;
+            _userRepository.Update(user);
+            return Ok();
+        }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpPost("degrade")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(404)]
+        public IActionResult DegradeFromAdmin([FromBody] string userId)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+            user.IsAdmin = false;
+            _userRepository.Update(user);
+            return Ok();
+        }
+
+        [Authorize(Policy = "IsAdmin")]
+        [HttpGet("isadmin/{userId}")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult CheckIfAdmin(string userId)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user == null || !user.IsAdmin)
+            {
+                return BadRequest();
+            }
+            return Ok();
+        }
+
         [Authorize]
         [HttpGet("renew")]
         [ProducesResponseType(typeof(LoginResponse), 200)]

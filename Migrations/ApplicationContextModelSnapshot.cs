@@ -3,7 +3,6 @@ using System;
 using AngularCore.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace AngularCore.Migrations
@@ -16,8 +15,7 @@ namespace AngularCore.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128)
-                .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("AngularCore.Data.Models.Comment", b =>
                 {
@@ -47,6 +45,30 @@ namespace AngularCore.Migrations
                     b.ToTable("Comments");
                 });
 
+            modelBuilder.Entity("AngularCore.Data.Models.Image", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("AuthorId")
+                        .IsRequired();
+
+                    b.Property<DateTime>("CreatedAt");
+
+                    b.Property<string>("MediaUrl")
+                        .IsRequired();
+
+                    b.Property<DateTime?>("ModifiedAt");
+
+                    b.Property<string>("Title");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("AuthorId");
+
+                    b.ToTable("Images");
+                });
+
             modelBuilder.Entity("AngularCore.Data.Models.Post", b =>
                 {
                     b.Property<string>("Id")
@@ -60,9 +82,6 @@ namespace AngularCore.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
-                    b.Property<string>("Discriminator")
-                        .IsRequired();
-
                     b.Property<DateTime?>("ModifiedAt");
 
                     b.Property<string>("WallOwnerId")
@@ -75,8 +94,6 @@ namespace AngularCore.Migrations
                     b.HasIndex("WallOwnerId");
 
                     b.ToTable("Posts");
-
-                    b.HasDiscriminator<string>("Discriminator").HasValue("Post");
                 });
 
             modelBuilder.Entity("AngularCore.Data.Models.User", b =>
@@ -88,6 +105,8 @@ namespace AngularCore.Migrations
 
                     b.Property<string>("Email")
                         .IsRequired();
+
+                    b.Property<bool>("IsAdmin");
 
                     b.Property<DateTime?>("ModifiedAt");
 
@@ -124,18 +143,6 @@ namespace AngularCore.Migrations
                     b.ToTable("UserFriends");
                 });
 
-            modelBuilder.Entity("AngularCore.Data.Models.Image", b =>
-                {
-                    b.HasBaseType("AngularCore.Data.Models.Post");
-
-                    b.Property<string>("MediaUrl")
-                        .IsRequired();
-
-                    b.ToTable("Image");
-
-                    b.HasDiscriminator().HasValue("Image");
-                });
-
             modelBuilder.Entity("AngularCore.Data.Models.Comment", b =>
                 {
                     b.HasOne("AngularCore.Data.Models.Post", "Post")
@@ -149,6 +156,14 @@ namespace AngularCore.Migrations
                         .OnDelete(DeleteBehavior.Restrict);
                 });
 
+            modelBuilder.Entity("AngularCore.Data.Models.Image", b =>
+                {
+                    b.HasOne("AngularCore.Data.Models.User", "Author")
+                        .WithMany("Images")
+                        .HasForeignKey("AuthorId")
+                        .OnDelete(DeleteBehavior.Restrict);
+                });
+
             modelBuilder.Entity("AngularCore.Data.Models.Post", b =>
                 {
                     b.HasOne("AngularCore.Data.Models.User", "Author")
@@ -159,7 +174,7 @@ namespace AngularCore.Migrations
                     b.HasOne("AngularCore.Data.Models.User", "WallOwner")
                         .WithMany("WallPosts")
                         .HasForeignKey("WallOwnerId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .OnDelete(DeleteBehavior.Restrict);
                 });
 
             modelBuilder.Entity("AngularCore.Data.Models.User", b =>

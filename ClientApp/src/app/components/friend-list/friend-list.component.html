@@ -3,7 +3,7 @@
     <mat-nav-list dense>
       <h2 matSubheader>Friends:</h2>
       <mat-list-item *ngFor="let friend of friends" [routerLink]='["/profile", friend.id]'>
-        <img matListAvatar src="../../../../../assets/images/default-profile-pic.png">
+        <img matListAvatar src="{{friend.profilePicture.mediaUrl}}">
         <div matLine>
           {{friend.name}} {{friend.surname}}
         </div>

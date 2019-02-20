@@ -17,11 +17,15 @@ namespace AngularCore.Controllers
     {
 
         private IUserRepository _userRepository;
+        private IImageRepository _imageRepository;
+        private IPostRepository _postRepository;
         private IMapper _mapper;
 
-        public UserController(IUserRepository userRepository, IMapper mapper)
+        public UserController(IUserRepository userRepository, IImageRepository imageRepository, IPostRepository postRepository, IMapper mapper)
         {
             _userRepository = userRepository;
+            _imageRepository = imageRepository;
+            _postRepository = postRepository;
             _mapper = mapper;
         }
 
@@ -45,6 +49,20 @@ namespace AngularCore.Controllers
             }
             var mapped = _mapper.Map<DetailedUserVM>(user);
             return Ok(mapped);
+        }
+
+        [HttpDelete("{userId}")]
+        [ProducesResponseType(204)]
+        [ProducesResponseType(404)]
+        public IActionResult DeleteUser(string userId)
+        {
+            var user = _userRepository.GetById(userId);
+            if(user == null)
+            {
+                return NotFound();
+            }
+            _userRepository.Delete(user);
+            return NoContent();
         }
 
         [HttpGet("{userId}/friends")]
@@ -117,7 +135,7 @@ namespace AngularCore.Controllers
             {
                 return NotFound(new ErrorMessage("User not found"));
             }
-            var posts = user.Posts.Union(user.WallPosts);
+            var posts = _postRepository.GetWhere(p => p.AuthorId == user.Id || p.WallOwnerId == user.Id);
             return Ok(_mapper.Map<List<PostVM>>(posts));
         }
 
@@ -146,6 +164,46 @@ namespace AngularCore.Controllers
             owner.WallPosts.Add(post);
             _userRepository.Update(owner);
             return Created($"/users/{userId}/posts/{post.Id}", _mapper.Map<PostVM>(post));
+        }
+
+        [HttpGet("{userId}/images")]
+        [ProducesResponseType(typeof(List<string>), 200)]
+        [ProducesResponseType(typeof(ErrorMessage), 404)]
+        public IActionResult GetUserImages(string userId)
+        {
+            var user = _userRepository.GetById(userId);
+            if (user == null)
+            {
+                return NotFound(new ErrorMessage("User not found"));
+            }
+
+            var images = from image in user.Images
+                         orderby image.CreatedAt
+                         select image;
+
+            return Ok(_mapper.Map<List<ImageVM>>(images));
+        }
+
+        [HttpPost("{userId}/avatar")]
+        [ProducesResponseType(200)]
+        [ProducesResponseType(400)]
+        public IActionResult SetUserAvatar(string userId, [FromBody] ProfilePictureUpdateVM profilePicture)
+        {
+            var user = _userRepository.GetById(userId);
+            if(user == null)
+            {
+                return BadRequest(new ErrorMessage("User not found"));
+            }
+
+            var image = _imageRepository.GetById(profilePicture.ImageId);
+            if(image == null)
+            {
+                return BadRequest(new ErrorMessage("Image not found"));
+            }
+
+            user.ProfilePicture = image;
+            _userRepository.Update(user);
+            return Ok();
         }
     }
 }

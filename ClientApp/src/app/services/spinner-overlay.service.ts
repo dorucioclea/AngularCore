@@ -5,8 +5,8 @@ import { Injectable } from '@angular/core';
 })
 export class SpinnerOverlayService {
 
-  spinnerMessage: string = null;
-  isVisible: boolean = false;
+  public spinnerMessage: string = null;
+  public isVisible: boolean = false;
 
   constructor() { }
 

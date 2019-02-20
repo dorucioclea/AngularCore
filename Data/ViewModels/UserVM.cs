@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace AngularCore.Data.ViewModels
 {
     public class UserVM
@@ -7,6 +5,8 @@ namespace AngularCore.Data.ViewModels
         public string Id { get; set; }
         public string Email { get; set; }
         public string Name { get; set; }
+        public bool IsAdmin { get; set; }
+        public AvatarVM ProfilePicture { get; set; }
         public string Surname { get; set; }
     }
 }

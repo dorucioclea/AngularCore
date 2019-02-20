@@ -1,0 +1,19 @@
+<div class="search-bar-wrapper">
+  <mat-form-field class="input-field">
+    <mat-icon class="icon-wrapper" matPrefix>search</mat-icon>
+    <input type="text" matInput [formControl]="searchPhrase" [matAutocomplete]="auto">
+  </mat-form-field>
+    
+  <mat-autocomplete #auto="matAutocomplete">
+    <div *ngIf="foundUsers$ | async as foundUsers">
+      <mat-option class="mat-option-wrapper" *ngFor="let user of foundUsers" [routerLink]='["/profile", user.id]'>
+        <div class="profile-hint-container">
+          <img class="profile-image" src="{{user.profilePicture.mediaUrl}}">
+          <div>
+            {{user.name}} {{user.surname}}
+          </div>
+        </div>
+      </mat-option>
+    </div>
+  </mat-autocomplete>
+</div>

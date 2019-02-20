@@ -2,11 +2,16 @@ using System.ComponentModel.DataAnnotations;
 
 namespace AngularCore.Data.Models
 {
-    public class Image : Post
+    public class Image : BaseEntity
     {
+        public string AuthorId { get; set; }
+
+        [Required]
+        public User Author { get; set; }
+
         [Required]
         public string MediaUrl { get; set; }
 
-        public override string Content { get; set; }
+        public string Title { get; set; }
     }
 }

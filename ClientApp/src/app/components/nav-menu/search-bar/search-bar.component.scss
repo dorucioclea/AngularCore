@@ -1,0 +1,30 @@
+.profile-image {
+  height: 35px;
+  width: 35px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 7px;
+}
+
+.profile-hint-container {
+  align-items: center;
+  font-size: 15px;
+  display: inline-flex;
+}
+
+.input-field {
+  width: 100%;
+}
+
+.icon-wrapper {
+  padding-right: 10px;
+}
+
+.search-bar-wrapper {
+  width: 40vh;
+  margin-bottom: -20px;
+}
+
+.mat-option-wrapper {
+  align-items: unset;
+}

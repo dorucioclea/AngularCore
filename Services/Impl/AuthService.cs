@@ -31,11 +31,12 @@ namespace AngularCore.Services
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity( new Claim[]
+                Subject = new ClaimsIdentity(new Claim[]
                 {
                     new Claim(JwtRegisteredClaimNames.UniqueName, user.Id),
                     new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("isAdmin", user.IsAdmin.ToString())
                 }),
                 Expires = DateTime.Now.AddDays(_appSettings.TokenDurationDays),
                 SigningCredentials = new SigningCredentials( new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)

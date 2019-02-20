@@ -12,6 +12,9 @@ using AngularCore.Repositories.Impl;
 using AutoMapper;
 using AngularCore.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
+using AngularCore.Services.Impl;
+using AngularCore.Helpers.Security;
+using Microsoft.AspNetCore.Authorization;
 
 namespace AngularCore
 {
@@ -37,6 +40,10 @@ namespace AngularCore
                 options.UseMySql(appSettingsSection.GetValue<string>("DbConnection"))
             );
             services.AddAutoMapper();
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("IsAdmin", policy => policy.Requirements.Add(new IsAdminRequirement()));
+            });
             services.AddCustomJwt(appSettingsSection.GetValue<string>("Secret"));
 
             // In production, the Angular files will be served from this directory
@@ -45,14 +52,14 @@ namespace AngularCore
                 configuration.RootPath = "ClientApp/dist";
             });
 
-            // For testing purposes when there is no access to database
-            // services.AddSingleton<IInMemoryUserRepository, InMemoryUserRepository>();
-            // services.AddSingleton<IInMemoryPostRepository, InMemoryPostRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<IImageRepository, ImageRepository>();
 
+            services.AddTransient<IImageService, ImageService>();
             services.AddScoped<IAuthService, AuthService>();
+
+            services.AddSingleton<IAuthorizationHandler, IsAdminHandler>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
