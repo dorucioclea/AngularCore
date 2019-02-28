@@ -3,7 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.27703.2042
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularCore", "AngularCore.csproj", "{5B92F9A7-D135-4555-B6B9-30A1B23C4678}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AngularCore", "Monolith\AngularCore.csproj", "{5B92F9A7-D135-4555-B6B9-30A1B23C4678}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Monolith", "Monolith", "{32A4F80F-E0B2-4E51-9E7D-FD26B4891D34}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Microservices", "Microservices", "{C327582E-C955-43F6-9F06-37EA0A498EAF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "FrontEnds", "Microservices\FrontEnds", "{C97698E9-0CEB-44E3-A567-24FAD635A7E5}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Gateways", "Microservices\Gateways", "{8A7BF908-70F0-4F48-ADF6-4EDEEB12668F}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Services", "Microservices\Services", "{B3FC20D1-026C-43E0-9F8D-15EC780B2F93}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientFrontEnd", "Microservices\FrontEnds\ClientFrontEnd\ClientFrontEnd.csproj", "{6102E1FC-0EDE-4634-99BB-A0D81313D9DD}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,9 +27,20 @@ Global
 		{5B92F9A7-D135-4555-B6B9-30A1B23C4678}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5B92F9A7-D135-4555-B6B9-30A1B23C4678}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5B92F9A7-D135-4555-B6B9-30A1B23C4678}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6102E1FC-0EDE-4634-99BB-A0D81313D9DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6102E1FC-0EDE-4634-99BB-A0D81313D9DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6102E1FC-0EDE-4634-99BB-A0D81313D9DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6102E1FC-0EDE-4634-99BB-A0D81313D9DD}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5B92F9A7-D135-4555-B6B9-30A1B23C4678} = {32A4F80F-E0B2-4E51-9E7D-FD26B4891D34}
+		{C97698E9-0CEB-44E3-A567-24FAD635A7E5} = {C327582E-C955-43F6-9F06-37EA0A498EAF}
+		{8A7BF908-70F0-4F48-ADF6-4EDEEB12668F} = {C327582E-C955-43F6-9F06-37EA0A498EAF}
+		{B3FC20D1-026C-43E0-9F8D-15EC780B2F93} = {C327582E-C955-43F6-9F06-37EA0A498EAF}
+		{6102E1FC-0EDE-4634-99BB-A0D81313D9DD} = {C97698E9-0CEB-44E3-A567-24FAD635A7E5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {765F2DF8-5D21-45E8-A015-1F9B6CF2D50E}
