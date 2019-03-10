@@ -1,0 +1,26 @@
+version: '3.4'
+
+services:
+  dbservice:
+    image: mysql:5.7
+    container_name: angularcore-mysql-database
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: angularcore
+      MYSQL_USER: vstudio
+      MYSQL_PASSWORD: vstudio
+    volumes:
+      - dbdata:/var/lib/mysql
+    restart: always
+
+  angularcore:
+    build:
+      context: ../
+      dockerfile: DockerCompose/Dockerfile
+    image: angularcore-monolith:dev
+    container_name: angularcore-monolith
+    depends_on:
+      - dbservice
+
+volumes:
+  dbdata:
