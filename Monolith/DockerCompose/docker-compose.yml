@@ -3,14 +3,19 @@ version: '3.4'
 services:
   dbservice:
     image: mysql:5.7
-    container_name: angularcore-mysql-database
+    container_name: angularcore-monolith-mysql-database
     environment:
       MYSQL_RANDOM_ROOT_PASSWORD: 1
       MYSQL_DATABASE: angularcore
       MYSQL_USER: vstudio
       MYSQL_PASSWORD: vstudio
     volumes:
-      - dbdata:/var/lib/mysql
+      - type: volume
+        source: dbdata
+        target: /var/lib/mysql
+      - type: bind
+        source: ./db_init.sql
+        target: /docker-entrypoint-initdb.d/db_init.sql
     restart: always
 
   angularcore:
@@ -18,7 +23,7 @@ services:
       context: ../
       dockerfile: DockerCompose/Dockerfile
     image: angularcore-monolith:dev
-    container_name: angularcore-monolith
+    container_name: angularcore-monolith  
     depends_on:
       - dbservice
 

@@ -8,13 +8,13 @@ COPY . .
 RUN apt-get update && apt-get install -y gnupg2 \
 	&& curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 	&& apt-get install -y nodejs \
-	&& dotnet ef database update \
 	&& dotnet build AngularCore.csproj -c Release -o /app \
 	&& dotnet publish AngularCore.csproj -c Release -o /app
 
 FROM base AS final
 WORKDIR /app
 COPY --from=build /app .
+COPY ./DockerCompose/docker-entrypoint.sh ./
 WORKDIR /app/ClientApp
 COPY ClientApp/ ./
 RUN apt-get update && apt-get install -y gnupg2 \
@@ -22,4 +22,4 @@ RUN apt-get update && apt-get install -y gnupg2 \
 	&& apt-get install -y nodejs \
 	&& npm install
 WORKDIR /app
-ENTRYPOINT ["dotnet", "AngularCore.dll"]
+ENTRYPOINT ["./docker-entrypoint.sh"]
