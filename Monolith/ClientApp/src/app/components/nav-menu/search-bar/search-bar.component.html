@@ -6,6 +6,9 @@
     
   <mat-autocomplete #auto="matAutocomplete">
     <div *ngIf="foundUsers$ | async as foundUsers">
+      <mat-option class="mat-option-wrapper" *ngIf="!foundUsers || foundUsers.length === 0">
+        <div class="profile-hint-container">No results</div>
+      </mat-option>
       <mat-option class="mat-option-wrapper" *ngFor="let user of foundUsers" [routerLink]='["/profile", user.id]'>
         <div class="profile-hint-container">
           <img class="profile-image" src="{{user.profilePicture.mediaUrl}}">
