@@ -25,6 +25,7 @@ export class ImageViewComponent implements OnInit {
   ngOnInit() {
     this.imageData = this.data.image;
     this.currentUser = this.data.currentUser;
+    console.log(this.imageData);
   }
 
   public setProfilePicture() {

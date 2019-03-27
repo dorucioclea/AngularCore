@@ -32,6 +32,7 @@ import { SearchBarComponent } from './components/nav-menu/search-bar/search-bar.
 import { UsersComponent } from './pages/admin/users/users.component';
 import { PostsComponent } from './pages/admin/posts/posts.component';
 import { PhotosComponent } from './pages/admin/photos/photos.component';
+import { DateFormatPipe } from './pipes/date-format.pipe';
 
 @NgModule({
   declarations: [
@@ -56,7 +57,8 @@ import { PhotosComponent } from './pages/admin/photos/photos.component';
     SearchBarComponent,
     UsersComponent,
     PostsComponent,
-    PhotosComponent
+    PhotosComponent,
+    DateFormatPipe
   ],
   entryComponents: [
     ImageUploadDialogComponent,
