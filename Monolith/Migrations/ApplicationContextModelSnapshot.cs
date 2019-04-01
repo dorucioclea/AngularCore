@@ -55,6 +55,8 @@ namespace AngularCore.Migrations
 
                     b.Property<DateTime>("CreatedAt");
 
+                    b.Property<bool>("IsProfilePicture");
+
                     b.Property<string>("MediaUrl")
                         .IsRequired();
 
@@ -115,13 +117,9 @@ namespace AngularCore.Migrations
                     b.Property<string>("Password")
                         .IsRequired();
 
-                    b.Property<string>("ProfilePictureId");
-
                     b.Property<string>("Surname");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("ProfilePictureId");
 
                     b.ToTable("Users");
                 });
@@ -175,13 +173,6 @@ namespace AngularCore.Migrations
                         .WithMany("WallPosts")
                         .HasForeignKey("WallOwnerId")
                         .OnDelete(DeleteBehavior.Restrict);
-                });
-
-            modelBuilder.Entity("AngularCore.Data.Models.User", b =>
-                {
-                    b.HasOne("AngularCore.Data.Models.Image", "ProfilePicture")
-                        .WithMany()
-                        .HasForeignKey("ProfilePictureId");
                 });
 
             modelBuilder.Entity("AngularCore.Data.Models.UserFriends", b =>

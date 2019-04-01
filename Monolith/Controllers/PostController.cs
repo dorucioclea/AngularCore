@@ -5,7 +5,6 @@ using AngularCore.Repositories;
 using AutoMapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace AngularCore.Controllers
 {

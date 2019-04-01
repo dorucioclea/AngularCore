@@ -14,18 +14,18 @@ namespace AngularCore.Repositories.Impl
         public override IQueryable<Post> GetAll()
         {
             return Entity.Include( p => p.Author )
-                            .ThenInclude( a => a.ProfilePicture)
+                            .ThenInclude( a => a.Images)
                          .Include( p => p.WallOwner )
-                            .ThenInclude( wo => wo.ProfilePicture)
+                            .ThenInclude( wo => wo.Images)
                             .AsQueryable();
         }
 
         public override IQueryable<Post> GetWhere(Expression<Func<Post, bool>> predicate)
         {
             return Entity.Include(p => p.Author)
-                            .ThenInclude(a => a.ProfilePicture)
+                            .ThenInclude(a => a.Images)
                          .Include(p => p.WallOwner)
-                            .ThenInclude(wo => wo.ProfilePicture)
+                            .ThenInclude(wo => wo.Images)
                             .Where(predicate)
                             .AsQueryable();
         }

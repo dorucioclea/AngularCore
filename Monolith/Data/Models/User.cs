@@ -19,7 +19,22 @@ namespace AngularCore.Data.Models
 
         public bool IsAdmin { get; set; } = false;
 
-        public Image ProfilePicture { get; set; }
+        [NotMapped]
+        public Image ProfilePicture
+        {
+            get {
+                var image = Images.Where(i => i.IsProfilePicture == true).FirstOrDefault();
+                if (image == null)
+                {
+                    image = new Image
+                    {
+                        MediaUrl = "../../../assets/images/default-profile-pic.png",
+                        Author = this
+                    };
+                }
+                return image;
+            }
+        }
 
         public List<Image> Images { get; set; }
 

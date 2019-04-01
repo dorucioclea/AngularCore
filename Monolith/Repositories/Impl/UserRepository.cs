@@ -17,10 +17,10 @@ namespace AngularCore.Repositories.Impl
             return Entity
                 .Include(u => u.FriendUsers)
                     .ThenInclude(uf => uf.User)
-                        .ThenInclude(u => u.ProfilePicture)
+                        .ThenInclude(u => u.Images)
                 .Include(u => u.UserFriends)
                     .ThenInclude(fu => fu.Friend)
-                        .ThenInclude(u => u.ProfilePicture)
+                        .ThenInclude(u => u.Images)
                 .Include( u => u.Posts )
                 .Include( u => u.WallPosts )
                 .Include( u => u.Images )
@@ -29,12 +29,12 @@ namespace AngularCore.Repositories.Impl
 
         public override IQueryable<User> GetWhere(Expression<Func<User, bool>> predicate)
         {
-            return Entity.Include(u => u.ProfilePicture).Where(predicate);
+            return Entity.Include(u => u.Images).Where(predicate);
         }
 
         public override IQueryable<User> GetAll()
         {
-            return Entity.Include(u => u.ProfilePicture).AsQueryable();
+            return Entity.Include(u => u.Images).AsQueryable();
         }
     }
 }

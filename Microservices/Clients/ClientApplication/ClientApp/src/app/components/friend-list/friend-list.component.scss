@@ -1,0 +1,7 @@
+mat-card {
+  padding: 10px;
+}
+
+:host /deep/ .mat-list-item-content {
+  padding: 0!important;
+}

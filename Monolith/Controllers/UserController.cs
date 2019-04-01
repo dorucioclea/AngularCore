@@ -194,15 +194,22 @@ namespace AngularCore.Controllers
             {
                 return BadRequest(new ErrorMessage("User not found"));
             }
+            var currentProfilePicture = user.Images
+                                            .Where(i => i.IsProfilePicture == true)
+                                            .FirstOrDefault();
+            if(currentProfilePicture != null)
+            {
+                currentProfilePicture.IsProfilePicture = false;
+                _imageRepository.Update(currentProfilePicture);
+            }
 
             var image = _imageRepository.GetById(profilePicture.ImageId);
             if(image == null)
             {
                 return BadRequest(new ErrorMessage("Image not found"));
             }
-
-            user.ProfilePicture = image;
-            _userRepository.Update(user);
+            image.IsProfilePicture = true;
+            _imageRepository.Update(image);
             return Ok();
         }
     }

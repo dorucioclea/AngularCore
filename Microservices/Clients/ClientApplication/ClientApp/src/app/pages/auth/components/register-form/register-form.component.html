@@ -1,0 +1,50 @@
+<mat-card>
+    <mat-card-content>
+      <mat-card class="error-message-box" *ngIf="submitted && errorMessage">
+        <mat-card-content>
+          {{errorMessage}}
+        </mat-card-content>
+      </mat-card>
+      <form [formGroup]="registerForm" (ngSubmit)="onRegister()" fxLayout="column" fxLayoutGap="20px">
+
+        <mat-form-field>
+          <input matInput type="text" formControlName="name" placeholder="Name">
+          <mat-error *ngIf="submitted && fields.name.errors">
+            <div *ngIf="fields.name.errors.required">Name is required</div>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="text" formControlName="surname" placeholder="Surname">
+          <mat-error *ngIf="submitted && fields.surname.errors">
+            <div *ngIf="fields.surname.errors.required">Surname is required</div>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="email" formControlName="email" placeholder="Email">
+          <mat-error *ngIf="submitted && fields.email.errors">
+              <div *ngIf="fields.email.errors.required">Email is required</div>
+              <div *ngIf="fields.email.errors.email">Email is in wrong format</div>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="password" formControlName="password" placeholder="Password">
+          <mat-error *ngIf="submitted && fields.password.errors">
+            <div *ngIf="fields.password.errors.required">Password is required</div>
+          </mat-error>
+        </mat-form-field>
+
+        <mat-form-field>
+          <input matInput type="password" formControlName="passwordCheck" placeholder="Confirm Password:">
+          <mat-error *ngIf="submitted && fields.passwordCheck.errors">
+            <div *ngIf="fields.passwordCheck.errors.required">Confirmation is required</div>
+          </mat-error>
+        </mat-form-field>
+
+        <button mat-raised-button color="primary" type="submit" fxLayout="row" fxLayoutAlign="end end">Register</button>
+
+      </form>
+    </mat-card-content>
+  </mat-card>

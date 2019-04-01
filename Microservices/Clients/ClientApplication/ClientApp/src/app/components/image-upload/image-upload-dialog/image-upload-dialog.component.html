@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Upload an image!</h1>
+<div mat-dialog-content class="content-center">
+  <div *ngIf="imgURL" fxLayout="column" fxLayoutAlign="center center">
+    <mat-form-field>
+      <input matInput [(ngModel)]="title" placeholder="Photo title?">
+    </mat-form-field>
+    <img [src]="imgURL" height="{{imgHeight}}">
+  </div>
+  <br />
+  <input #imageInput type="file" accept="image/*" (change)="previewImage(imageInput.files)">  
+</div>
+<div mat-dialog-actions class="content-right">
+  <button mat-button [mat-dialog-close]="false">Cancel</button>
+  <button mat-button [mat-dialog-close]="returnData()" cdkFocusInitial>Upload</button>
+</div>

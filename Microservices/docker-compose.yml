@@ -1,0 +1,147 @@
+version: '3.4'
+
+services:
+
+  identityservice:
+    image: identityservice
+    build:
+      context: Services/
+      dockerfile: IdentityService/Dockerfile
+    container_name: angularcore_identity
+    depends_on:
+      - mysql-identity
+      - rabbitmq
+
+  searchservice:
+    image: searchservice
+    build:
+      context: Services/
+      dockerfile: SearchService/Dockerfile
+    container_name: angularcore_search
+    depends_on:
+      - mysql-search
+      - rabbitmq
+
+  postservice:
+    image: postservice
+    build:
+      context: Services/
+      dockerfile: PostService/Dockerfile
+    container_name: angularcore_post
+    depends_on:
+      - mysql-post
+      - rabbitmq
+
+  imageservice:
+    image: imageservice
+    build:
+      context: Services/
+      dockerfile: ImageService/Dockerfile
+    container_name: angularcore_image
+    depends_on:
+      - mysql-image
+      - rabbitmq
+
+### Gateways:
+
+  clientgateway:
+    image: clientgateway
+    build:
+      context: Gateways/
+      dockerfile: ClientGateway/Dockerfile
+    container_name: angularcore_gateway_client
+    environment:
+      IdentityApiUrl : http://identityservice
+      SearchApiUrl : http://searchservice
+      PostsApiUrl : http://postservice
+      ImagesApiUrl : http://imageservice
+    depends_on:
+      - identityservice
+      - searchservice
+      - postservice
+      - imageservice
+
+  admingateway:
+    image: admingateway
+    build:
+      context: Gateways/
+      dockerfile: AdminGateway/Dockerfile
+    container_name: angularcore_gateway_admin
+    environment:
+      IdentityApiUrl : http://identityservice
+      SearchApiUrl : http://searchservice
+      PostsApiUrl : http://postservice
+      ImagesApiUrl : http://imageservice
+    depends_on:
+      - identityservice
+      - searchservice
+      - postservice
+      - imageservice
+
+### Clients
+
+  clientapplication:
+    image: clientapplication
+    build:
+      context: Clients/ClientApplication
+      dockerfile: Dockerfile
+    container_name: angularcore_front_client
+
+### Messaging:
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "15672:15672"
+    container_name: angularcore_rabbitmq
+
+### Databases:
+
+  mysql-identity:
+    image: mysql:5.7
+    container_name: angularcore_mysql_identity
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: angularcore_m_identity
+      MYSQL_USER: vstudio
+      MYSQL_PASSWORD: vstudio
+    volumes:
+      - ./Services/Databases/identity_service_db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+
+  mysql-search:
+    image: mysql:5.7
+    container_name: angularcore_mysql_search
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: angularcore_m_search
+      MYSQL_USER: vstudio
+      MYSQL_PASSWORD: vstudio
+    volumes:
+      - ./Services/Databases/search_service_db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+
+  mysql-post:
+    image: mysql:5.7
+    container_name: angularcore_mysql_post
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: angularcore_m_post
+      MYSQL_USER: vstudio
+      MYSQL_PASSWORD: vstudio
+    volumes:
+      - ./Services/Databases/post_service_db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+
+  mysql-image:
+    image: mysql:5.7
+    container_name: angularcore_mysql_image
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: angularcore_m_image
+      MYSQL_USER: vstudio
+      MYSQL_PASSWORD: vstudio
+    volumes:
+      - ./Services/Databases/image_service_db.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: always
+  

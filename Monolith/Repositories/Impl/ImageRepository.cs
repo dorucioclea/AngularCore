@@ -13,7 +13,7 @@ namespace AngularCore.Repositories.Impl
         {
             return Entity
                     .Include(i => i.Author)
-                        .ThenInclude(a => a.ProfilePicture).AsQueryable();
+                        .ThenInclude(a => a.Images).AsQueryable();
         }
     }
 }
