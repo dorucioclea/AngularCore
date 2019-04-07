@@ -38,10 +38,10 @@ namespace IdentityService.Controllers
             return await _users.Where(u => u.Id == id).FirstOrDefaultAsync();
         }
 
-        [HttpGet("{id}/friends")]
+        [HttpGet("{userId}/friends")]
         public async Task<IEnumerable<User>> GetUserFriends(Guid userId)
         {
-            var user = await _users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            var user = await _users.Include("Friends").Where(u => u.Id == userId).FirstOrDefaultAsync();
             if(user != null)
             {
                 var userFriendIds = user.Friends.Select(uf => uf.FriendId).ToList();
@@ -50,8 +50,8 @@ namespace IdentityService.Controllers
             return new List<User>();
         }
 
-        [HttpPost("{id}/friends")]
-        public async void AddUserFriend(Guid userId, [FromBody] AddFriend addFriend)
+        [HttpPost("{userId}/friends")]
+        public async Task<IActionResult> AddUserFriend(Guid userId, [FromBody] AddFriend addFriend)
         {
             var user = await _users.Include(u => u.Friends).Where(u => u.Id == userId).FirstOrDefaultAsync();
             var friend = await _users.Include(f => f.Friends).Where(f => f.Id == addFriend.UserId).FirstOrDefaultAsync();
@@ -73,10 +73,11 @@ namespace IdentityService.Controllers
                 _users.Update(friend);
                 await _context.SaveChangesAsync();
             }
+            return Ok();
         }
 
         [HttpDelete("{userId}/friends/{friendId}")]
-        public async void RemoveUserFriend(Guid userId, Guid friendId)
+        public async Task<IActionResult> RemoveUserFriend(Guid userId, Guid friendId)
         {
             var user = await _users.Include(u => u.Friends).Where(u => u.Id == userId).FirstOrDefaultAsync();
             var friend = await _users.Include(f => f.Friends).Where(f => f.Id == friendId).FirstOrDefaultAsync();
@@ -93,12 +94,13 @@ namespace IdentityService.Controllers
                 _users.Update(friend);
                 await _context.SaveChangesAsync();
             }
+            return Ok();
         }
 
         // TODO
         //[Authorize]
         [HttpPut("{id}")]
-        public async void Put(Guid id, [FromBody] UserUpdate userUpdate)
+        public async Task<IActionResult> Put(Guid id, [FromBody] UserUpdate userUpdate)
         {
             var user = await _users.Where(u => u.Id == id).FirstOrDefaultAsync();
             if (user != null)
@@ -114,10 +116,11 @@ namespace IdentityService.Controllers
                     LastName = user.LastName
                 });
             }
+            return Ok();
         }
         
         [HttpDelete("{id}")]
-        public async void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var user = await _users.Where(u => u.Id == id).FirstOrDefaultAsync();
             if(user != null)
@@ -129,6 +132,7 @@ namespace IdentityService.Controllers
                     UserId = id,
                 });
             }
+            return Ok();
         }
     }
 }

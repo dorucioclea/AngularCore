@@ -1,0 +1,26 @@
+<mat-card *ngIf="usersList$ | async as usersList">
+  <mat-card-content>
+    <mat-nav-list>
+      <h2 matSubheader>Users:</h2>
+      <mat-list-item *ngFor="let user of usersList">
+        <img matListAvatar src="{{user.profilePictureUrl}}">
+        <a matLine [routerLink]='["/profile", user.id]'>
+          {{user.firstName}} {{user.lastName}}
+        </a>
+        <div fxLayout="row" fxLayoutGap="5px">
+          <button *ngIf="!user.isAdmin; else alreadyAdmin" mat-raised-button color="accent" (click)="promoteToAdmin(user.id)">
+            Promote
+          </button>
+          <ng-template #alreadyAdmin>
+            <button class="button-wrapper" *ngIf="user.isAdmin" mat-raised-button color="accent" (click)="degradeFromAdmin(user.id)">
+              Degrade
+            </button>
+          </ng-template>
+          <button class="button-wrapper" mat-raised-button color="accent" (click)="deleteUser(user.id)">
+            Delete
+          </button>
+        </div>
+      </mat-list-item>
+    </mat-nav-list>
+  </mat-card-content>
+</mat-card>

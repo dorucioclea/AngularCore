@@ -40,6 +40,7 @@ namespace SearchService
             builder.RegisterType<UserAddedEventConsumer>();
             builder.RegisterType<UserUpdatedEventConsumer>();
             builder.RegisterType<UserDeletedEventConsumer>();
+            builder.RegisterType<ProfilePictureChangedEventConsumer>();
             builder.Register(context =>
                 {
                     return Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -56,6 +57,7 @@ namespace SearchService
                             e.Consumer<UserAddedEventConsumer>(context);
                             e.Consumer<UserUpdatedEventConsumer>(context);
                             e.Consumer<UserDeletedEventConsumer>(context);
+                            e.Consumer<ProfilePictureChangedEventConsumer>(context);
                         });
                     });
                 })
@@ -81,7 +83,7 @@ namespace SearchService
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
 
             var bus = ApplicationContainer.Resolve<IBusControl>();

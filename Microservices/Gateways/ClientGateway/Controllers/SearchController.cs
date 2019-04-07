@@ -2,20 +2,21 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClientGateway.Models;
-using ClientGateway.Services;
-using Microsoft.AspNetCore.Http;
+using AngularCore.Microservices.Gateways.Api.Models;
+using AngularCore.Microservices.Gateways.Api.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientGateway.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class SearchController : ControllerBase
     {
-        private readonly ISearchApiService _searchService;
+        private readonly IClientSearchApiService _searchService;
 
-        public SearchController(ISearchApiService searchService)
+        public SearchController(IClientSearchApiService searchService)
         {
             _searchService = searchService;
         }

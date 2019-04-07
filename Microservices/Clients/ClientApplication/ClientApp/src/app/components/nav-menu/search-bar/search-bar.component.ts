@@ -13,8 +13,7 @@ import { startWith, map } from 'rxjs/operators';
 })
 export class SearchBarComponent implements OnInit {
 
-  private defaultProfileSrc = "../../../assets/images/default-profile-pic.png";
-
+  
   public searchPhrase = new FormControl();
   public foundUsers$ = new Observable<User[]>();
 
@@ -23,29 +22,10 @@ export class SearchBarComponent implements OnInit {
   ngOnInit() {
     this.searchPhrase.valueChanges.subscribe(value => {
       if (value != '') {
-        this.foundUsers$ = this.searchService.searchForUsers(value).pipe(
-          map(users => {
-            return this.setDefaultProfilePictures(users);
-          })
-        );
+        this.foundUsers$ = this.searchService.searchForUsers(value);
       } else {
         this.foundUsers$ = new Observable<User[]>();
       }
     }); 
-  }
-
-  private setDefaultProfilePictures(users) {
-    if (!users) {
-      return;
-    }
-
-    users.forEach(friend => {
-      if (!friend.profilePicture) {
-        let noProfile = new Image();
-        noProfile.mediaUrl = this.defaultProfileSrc;
-        friend.profilePicture = noProfile;
-      }
-    })
-    return users;
   }
 }

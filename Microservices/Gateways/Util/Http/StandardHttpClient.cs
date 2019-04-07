@@ -1,4 +1,8 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Primitives;
+using Newtonsoft.Json;
+using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -7,8 +11,14 @@ namespace AngularCore.Microservices.Gateways.Http
 {
     public class StandardHttpClient : IHttpClient
     {
+        private readonly IHttpContextAccessor _contextAccessor;
+
         private static readonly HttpClient Client = new HttpClient();
-        
+
+        public StandardHttpClient(IHttpContextAccessor contextAccessor)
+        {
+            _contextAccessor = contextAccessor;
+        }
 
         public async Task<HttpResponseMessage> GetAsync(string uri)
             => await RequestAsync(HttpMethod.Get, uri);
@@ -37,9 +47,17 @@ namespace AngularCore.Microservices.Gateways.Http
 
         protected async Task<TR> RequestAsync<TR, TI>(HttpMethod httpMethod, string uri, TI item)
         {
-            var responseMessage = await RequestAsync(httpMethod, uri, item);
-            var dataString = await responseMessage.Content.ReadAsStringAsync();
-            return JsonConvert.DeserializeObject<TR>(dataString);
+            try
+            {
+                var responseMessage = await RequestAsync(httpMethod, uri, item);
+                var dataString = await responseMessage.Content.ReadAsStringAsync();
+                return JsonConvert.DeserializeObject<TR>(dataString);
+            } catch (Exception ex)
+            {
+                Console.WriteLine("Exception occurred:");
+                Console.WriteLine(ex.Message);
+                throw ex;
+            }
         }
 
         protected async Task<HttpResponseMessage> RequestAsync<T>(HttpMethod httpMethod, string uri, T item)
@@ -59,6 +77,7 @@ namespace AngularCore.Microservices.Gateways.Http
 
         protected async Task<HttpResponseMessage> SendRequestAsync(HttpRequestMessage requestMessage)
         {
+            AddAuthHeader(requestMessage);
             var response = await Client.SendAsync(requestMessage);
 
             if (response.StatusCode == HttpStatusCode.InternalServerError)
@@ -67,6 +86,16 @@ namespace AngularCore.Microservices.Gateways.Http
             }
 
             return response;
+        }
+
+        private void AddAuthHeader(HttpRequestMessage request)
+        {
+            _contextAccessor.HttpContext.Request.Headers.TryGetValue("Authorization", out StringValues authHeader);
+            var authToken = authHeader.FirstOrDefault();
+            if (!String.IsNullOrEmpty(authToken))
+            {
+                request.Headers.Add("Authorization", authToken);
+            }
         }
     }
 }

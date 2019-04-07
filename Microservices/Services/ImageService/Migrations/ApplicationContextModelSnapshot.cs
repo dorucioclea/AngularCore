@@ -14,7 +14,7 @@ namespace ImageService.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("ImageService.Data.Image", b =>
@@ -22,7 +22,7 @@ namespace ImageService.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd();
 
-                    b.Property<Guid>("AuthorId");
+                    b.Property<Guid?>("AuthorId");
 
                     b.Property<DateTime>("CreatedAt");
 
@@ -36,7 +36,32 @@ namespace ImageService.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AuthorId");
+
                     b.ToTable("Images");
+                });
+
+            modelBuilder.Entity("ImageService.Data.User", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("FirstName");
+
+                    b.Property<string>("LastName");
+
+                    b.Property<string>("ProfilePictureUrl");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Users");
+                });
+
+            modelBuilder.Entity("ImageService.Data.Image", b =>
+                {
+                    b.HasOne("ImageService.Data.User", "Author")
+                        .WithMany()
+                        .HasForeignKey("AuthorId");
                 });
 #pragma warning restore 612, 618
         }

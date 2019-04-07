@@ -9,7 +9,7 @@ using PostService.ViewModels;
 
 namespace PostService.Controllers
 {
-    [Route("api/post")]
+    [Route("api/posts")]
     [ApiController]
     public class PostsController : ControllerBase
     {
@@ -25,42 +25,51 @@ namespace PostService.Controllers
         [HttpGet("author/{id}")]
         public async Task<IEnumerable<Post>> GetForAuthor(Guid id)
         {
-            return await _posts.Where(p => p.AuthorId == id).ToListAsync();
+            List<Post> posts =  await _posts.Include("Author").Include("WallOwner")
+                                            .Where(p => p.Author.Id == id).ToListAsync();
+            return posts;
         }
 
         [HttpGet("wall/{id}")]
         public async Task<IEnumerable<Post>> GetForWall(Guid id)
         {
-            return await _posts.Where(p => p.WallOwnerId == id).ToListAsync();
+            List<Post> posts =  await _posts.Include("Author").Include("WallOwner")
+                                            .Where(p => p.WallOwner.Id == id).ToListAsync();
+            return posts;
         }
 
         [HttpGet]
         public async Task<IEnumerable<Post>> Get()
         {
-            return await _posts.ToListAsync();
+            List<Post> posts = await _posts.Include("Author").Include("WallOwner").ToListAsync();
+            return posts;
         }
 
         [HttpGet("{id}")]
         public async Task<Post> Get(Guid id)
         {
-            return await _posts.Where(p => p.Id == id).FirstOrDefaultAsync();
+            return  await _posts.Include("Author").Include("WallOwner")
+                                .Where(p => p.Id == id).FirstOrDefaultAsync();
         }
 
         [HttpPost]
-        public void Post([FromBody] PostCreate postCreate)
+        public async Task<IActionResult> Post([FromBody] PostCreate postCreate)
         {
+            var user = _context.Users.Where(u => u.Id == postCreate.AuthorId).FirstOrDefault();
+            var wallOwner = _context.Users.Where(u => u.Id == postCreate.WallOwnerId).FirstOrDefault();
             var newPost = new Post
             {
-                AuthorId = postCreate.AuthorId,
-                WallOwnerId = postCreate.WallOwnerId,
+                Author = user,
+                WallOwner = wallOwner,
                 Content = postCreate.Content
             };
-            _posts.AddAsync(newPost);
-            _context.SaveChangesAsync();
+            await _posts.AddAsync(newPost);
+            await _context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpPut("{id}")]
-        public async void Put(Guid id, [FromBody] PostUpdate postUpdate)
+        public async Task<IActionResult> Put(Guid id, [FromBody] PostUpdate postUpdate)
         {
             var post = await _posts.Where(p => p.Id == id).FirstOrDefaultAsync();
             if(post != null)
@@ -69,10 +78,11 @@ namespace PostService.Controllers
             }
             _posts.Update(post);
             await _context.SaveChangesAsync();
+            return Ok();
         }
 
         [HttpDelete("{id}")]
-        public async void Delete(Guid id)
+        public async Task<IActionResult> Delete(Guid id)
         {
             var post = await _posts.Where(p => p.Id == id).FirstOrDefaultAsync();
             if(post != null)
@@ -80,6 +90,7 @@ namespace PostService.Controllers
                 _posts.Remove(post);
                 await _context.SaveChangesAsync();
             }
+            return Ok();
         }
     }
 }

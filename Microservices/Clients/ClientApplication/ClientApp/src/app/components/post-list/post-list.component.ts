@@ -13,14 +13,11 @@ export class PostListComponent implements OnInit, OnChanges {
   @Input() posts: Post[] = new Array<Post>();
   @Input() showRecipient: boolean;
 
-  private defaultProfileSrc = "../../../assets/images/default-profile-pic.png";
-
   constructor() { }
 
   ngOnInit() {
     if (this.posts) {
       this.posts = this.posts.sort(this.sortByDateFunc());
-      this.setDefaultProfilePictures();
       console.log(this.posts);
     }
   }
@@ -28,22 +25,7 @@ export class PostListComponent implements OnInit, OnChanges {
   ngOnChanges(changes: SimpleChanges) {
     if (changes.posts && changes.posts.currentValue) {
       this.posts = changes.posts.currentValue.sort(this.sortByDateFunc());
-      this.setDefaultProfilePictures();
     }
-  }
-
-  private setDefaultProfilePictures() {
-    if (!this.posts) {
-      return;
-    }
-
-    this.posts.forEach(post => {
-      if (!post.author.profilePicture) {
-        let noProfile = new Image();
-        noProfile.mediaUrl = this.defaultProfileSrc;
-        post.author.profilePicture = noProfile;
-      }
-    })
   }
 
   private sortByDateFunc() {

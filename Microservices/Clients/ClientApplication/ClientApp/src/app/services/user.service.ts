@@ -12,7 +12,9 @@ import { ProfilePictureUpdate } from '@app/models/profile-picture-update';
 })
 export class UserService{
 
-  private userUrl = "http://localhost:16000/api/users/";
+    private readonly apiUrl = "http://localhost:16000/api";
+    private readonly userUrl = this.apiUrl + "/users/";
+    private readonly postsUrl = this.apiUrl + "/posts";
 
   constructor(
     private http: HttpClient,
@@ -31,7 +33,7 @@ export class UserService{
     if(!userId) {
       userId = this.authService.loggedUserValue.id;
     }
-    return this.http.get<Post[]>(this.userUrl + userId + "/posts");
+    return this.http.get<Post[]>(this.postsUrl + "/wall/" + userId);
   }
 
   public getUserImages(userId?: string) {
@@ -45,15 +47,10 @@ export class UserService{
     if(!userId) {
       userId = this.authService.loggedUserValue.id;
     }
-    return this.http.post<Post>(this.userUrl + userId + "/posts", post);
-  }
-
-  public setUserProfilePicture(imageId: string, userId?: string) {
-    if (!userId) {
-      userId = this.authService.loggedUserValue.id;
+    if (!post.authorId) {
+      post.authorId = userId; 
     }
-    var imageUpdate = new ProfilePictureUpdate(imageId = imageId);
-    return this.http.post(this.userUrl + userId + "/avatar", imageUpdate );
+    return this.http.post<Post>(this.postsUrl, post);
   }
 
   public deleteUser(userId: string) {

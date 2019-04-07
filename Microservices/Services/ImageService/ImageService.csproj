@@ -4,11 +4,8 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>4f1c605f-f9a0-46f9-a48f-5c2c1113d1ea</UserSecretsId>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
-
-  <ItemGroup>
-    <Folder Include="wwwroot\" />
-  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Autofac.Extensions.DependencyInjection" Version="4.4.0" />
@@ -20,6 +17,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Util\IntegrationEvents\Events.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\upload\" />
   </ItemGroup>
 
   <Target Name="PostBuild" AfterTargets="PostBuildEvent">

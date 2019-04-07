@@ -11,6 +11,8 @@ namespace IdentityService.Data
 
         public string Email { get; set; }
 
+        public string ProfilePictureUrl { get; set; } = "http://localhost:15003/upload/default-profile-pic.png";
+
         public string Password { get; set; }
 
         public bool IsAdmin { get; set; }

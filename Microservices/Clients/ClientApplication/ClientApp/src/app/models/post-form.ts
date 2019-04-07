@@ -1,8 +1,9 @@
 export class PostForm {
 
-  constructor(
-    public ownerId?: string,
-    public content?: string
-  ){ }
+    constructor(
+        public authorId?: string,
+        public ownerId?: string,
+        public content?: string
+    ){ }
 
 }

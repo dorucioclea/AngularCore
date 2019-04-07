@@ -1,7 +1,7 @@
 FROM microsoft/dotnet:2.1-aspnetcore-runtime AS base
 WORKDIR /app
-EXPOSE 57018
-EXPOSE 44335
+EXPOSE 16001
+EXPOSE 16101
 
 FROM microsoft/dotnet:2.1-sdk AS build
 WORKDIR /src
@@ -18,3 +18,4 @@ FROM base AS final
 WORKDIR /app
 COPY --from=publish /app .
 ENTRYPOINT ["dotnet", "AdminGateway.dll"]
+

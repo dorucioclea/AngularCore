@@ -83,9 +83,16 @@ services:
   clientapplication:
     image: clientapplication
     build:
-      context: Clients/ClientApplication
+      context: Clients/ClientApplication/
       dockerfile: Dockerfile
     container_name: angularcore_front_client
+
+  adminapplication:
+    image: adminapplication
+    build:
+      context: Clients/AdminApplication/
+      dockerfile: Dockerfile
+    container_name: angularcore_front_admin
 
 ### Messaging:
 
@@ -105,6 +112,8 @@ services:
       MYSQL_DATABASE: angularcore_m_identity
       MYSQL_USER: vstudio
       MYSQL_PASSWORD: vstudio
+    ports:
+      - "14000:3306"
     volumes:
       - ./Services/Databases/identity_service_db.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
@@ -117,6 +126,8 @@ services:
       MYSQL_DATABASE: angularcore_m_search
       MYSQL_USER: vstudio
       MYSQL_PASSWORD: vstudio
+    ports:
+      - "14001:3306"
     volumes:
       - ./Services/Databases/search_service_db.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
@@ -129,6 +140,8 @@ services:
       MYSQL_DATABASE: angularcore_m_post
       MYSQL_USER: vstudio
       MYSQL_PASSWORD: vstudio
+    ports:
+      - "14002:3306"
     volumes:
       - ./Services/Databases/post_service_db.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
@@ -141,6 +154,8 @@ services:
       MYSQL_DATABASE: angularcore_m_image
       MYSQL_USER: vstudio
       MYSQL_PASSWORD: vstudio
+    ports:
+      - "14003:3306"
     volumes:
       - ./Services/Databases/image_service_db.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always

@@ -1,7 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { MatDialogRef } from '@angular/material';
-import { ImageService } from '@app/services/image.service';
-import { SpinnerOverlayService } from '@app/services/spinner-overlay.service';
 
 @Component({
   selector: 'app-image-upload-dialog',
@@ -12,6 +10,7 @@ export class ImageUploadDialogComponent implements OnInit {
 
   public title: string;
   public imgURL: string;
+  public fileName: string;
   public imgHeight = 200;
 
   private image: any;
@@ -29,6 +28,7 @@ export class ImageUploadDialogComponent implements OnInit {
     }
 
     this.image = imageInput[0];
+    this.fileName = this.image.name;
     var reader = new FileReader();
     reader.readAsDataURL(this.image);
     reader.onload = (_event) => {
@@ -39,7 +39,8 @@ export class ImageUploadDialogComponent implements OnInit {
   returnData() {
     return {
       "image": this.image,
-      "title": this.title
+      "title": this.title,
+      "fileName": this.fileName
     };
   }
 }

@@ -11,9 +11,9 @@
       </mat-option>
       <mat-option class="mat-option-wrapper" *ngFor="let user of foundUsers" [routerLink]='["/profile", user.id]'>
         <div class="profile-hint-container">
-          <img class="profile-image" src="{{user.profilePicture.mediaUrl}}">
+          <img class="profile-image" src="{{user.profilePictureUrl}}">
           <div>
-            {{user.name}} {{user.surname}}
+            {{user.firstName}} {{user.lastName}}
           </div>
         </div>
       </mat-option>

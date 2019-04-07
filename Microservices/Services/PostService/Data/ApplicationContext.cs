@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace PostService.Data
 {
@@ -9,6 +11,7 @@ namespace PostService.Data
         public ApplicationContext(DbContextOptions<ApplicationContext> options) : base(options) { }
 
         public DbSet<Post> Posts { get; set; }
+        public DbSet<User> Users { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -17,6 +20,17 @@ namespace PostService.Data
 
         public override int SaveChanges()
         {
+            ModifyEntitiesOnSave();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ModifyEntitiesOnSave();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ModifyEntitiesOnSave() {
             var AddedEntities = ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Added).ToList();
             AddedEntities.ForEach(e =>
             {
@@ -28,8 +42,6 @@ namespace PostService.Data
             {
                 e.Entity.ModifiedAt = DateTime.Now;
             });
-
-            return base.SaveChanges();
         }
     }
 }

@@ -5,6 +5,8 @@ import { ObservableMedia, MediaChange } from '@angular/flex-layout';
 import { Subscription, Observable } from 'rxjs';
 import { MatSidenav } from '@angular/material';
 import { User } from '@app/models/user';
+import { ImageService } from '../../services/image.service';
+import { Image } from '../../models/image';
 
 @Component({
   selector: 'app-nav-menu',
@@ -25,13 +27,13 @@ export class NavMenuComponent implements OnInit, OnDestroy{
   loggedUser$: Observable<User>;
   friendList$: Observable<User[]>;
 
-  private defaultProfilePictureUrl: string = "../../../assets/images/default-profile-pic.png";
-  public profilePictureUrl: string = this.defaultProfilePictureUrl;
+  public profilePictureUrl: string;
 
   subscription: Subscription = new Subscription();
 
   constructor(
     public authService: AuthService,
+    private imageService: ImageService,
     private media: ObservableMedia,
     private friendService: FriendService
   ) {
@@ -54,11 +56,9 @@ export class NavMenuComponent implements OnInit, OnDestroy{
     this.subscription.add(this.loggedUser$.subscribe((user: User) => {
       if (user) {
         this.friendService.updateFriendlist(user.id);
-        if (user.profilePicture) {
-          this.profilePictureUrl = user.profilePicture.mediaUrl;
-        } else {
-          this.profilePictureUrl = this.defaultProfilePictureUrl;
-        }
+        this.imageService.getUserProfilePicture(user.id).subscribe((image: Image) => {
+            this.profilePictureUrl = image.mediaUrl;
+        });
       }
     }));
   }

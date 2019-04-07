@@ -36,7 +36,10 @@ namespace PostService
             );
 
             var builder = new ContainerBuilder();
+            builder.RegisterType<UserAddedEventConsumer>();
+            builder.RegisterType<UserUpdatedEventConsumer>();
             builder.RegisterType<UserDeletedEventConsumer>();
+            builder.RegisterType<ProfilePictureChangedEventConsumer>();
             builder.Register(context =>
             {
                 return Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -50,7 +53,10 @@ namespace PostService
                     // https://stackoverflow.com/questions/39573721/disable-round-robin-pattern-and-use-fanout-on-masstransit
                     cfg.ReceiveEndpoint(host, "angularcore_" + Guid.NewGuid().ToString(), e =>
                     {
+                        e.Consumer<UserAddedEventConsumer>(context);
+                        e.Consumer<UserUpdatedEventConsumer>(context);
                         e.Consumer<UserDeletedEventConsumer>(context);
+                        e.Consumer<ProfilePictureChangedEventConsumer>(context);
                     });
                 });
             })
@@ -76,7 +82,7 @@ namespace PostService
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseMvc();
 
             var bus = ApplicationContainer.Resolve<IBusControl>();

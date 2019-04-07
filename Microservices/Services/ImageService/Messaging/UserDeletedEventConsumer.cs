@@ -21,12 +21,17 @@ namespace ImageService.Messaging
         public async Task Consume(ConsumeContext<UserDeletedEvent> eventContext)
         {
             var userId = eventContext.Message.UserId;
-            var imagesToDelete = await _images.Where(i => i.AuthorId == userId).ToListAsync();
+            var imagesToDelete = await _images.Include("Author").Where(i => i.Author.Id == userId).ToListAsync();
             if (imagesToDelete != null && imagesToDelete.Count > 0)
             {
                 _images.RemoveRange(imagesToDelete);
-                await _context.SaveChangesAsync();
             }
+            var userToDelete = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            if(userToDelete != null)
+            {
+                _context.Users.Remove(userToDelete);
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

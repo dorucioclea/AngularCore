@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 
 namespace ClientApplication
 {
@@ -16,6 +17,10 @@ namespace ClientApplication
         }
 
         public IConfiguration Configuration { get; }
+        public bool IsContainerLaunch
+        {
+            get => !String.IsNullOrEmpty(Configuration["LAUNCH_METHOD"]) && Configuration["LAUNCH_METHOD"].Equals("Container");
+        }
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -42,7 +47,7 @@ namespace ClientApplication
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
 
@@ -60,7 +65,7 @@ namespace ClientApplication
 
                 spa.Options.SourcePath = "ClientApp";
 
-                if (env.IsDevelopment())
+                if (env.IsDevelopment() && !IsContainerLaunch)
                 {
                     spa.UseAngularCliServer(npmScript: "start");
                 }

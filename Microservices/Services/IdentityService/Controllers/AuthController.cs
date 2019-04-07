@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using IdentityService.ViewModels;
 using IdentityService.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace IdentityService.Controllers
 {
@@ -29,17 +30,17 @@ namespace IdentityService.Controllers
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(typeof(Guid), 200)]
+        [ProducesResponseType(typeof(SessionResponse), 200)]
         [ProducesResponseType(400)]
-        public IActionResult Login([FromBody] string login, [FromBody] string password)
+        public IActionResult Login([FromBody] LoginForm form)
         {
-            User userFound = _users.Where(u => u.Email == login && u.Password == password)
+            User userFound = _users.Where(u => u.Email == form.Email && u.Password == form.Password)
                                             .FirstOrDefault();
             if (userFound == null)
             {
                 return BadRequest();
             }
-            return Ok(userFound.Id);
+            return Ok(GenerateLoginResponse(userFound));
         }
 
         [HttpPost("register")]
@@ -65,22 +66,22 @@ namespace IdentityService.Controllers
                 FirstName = form.FirstName,
                 LastName = form.LastName,
                 Email = form.Email,
-                Password = form.Password
+                Password = form.Password,
             };
             await _users.AddAsync(newUser);
             await _context.SaveChangesAsync();
             await _bus.Publish(new UserAddedEvent
             {
-                UserId = user.Id,
-                FirstName = user.FirstName,
-                LastName = user.LastName
+                UserId = newUser.Id,
+                FirstName = newUser.FirstName,
+                LastName = newUser.LastName
             });
 
             return Ok(GenerateLoginResponse(newUser));
         }
 
-        // TODO
-        //[Authorize(Policy = "IsAdmin")]
+        
+        [Authorize]
         [HttpPost("promote")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -97,8 +98,7 @@ namespace IdentityService.Controllers
             return Ok();
         }
 
-        // TODO
-        //[Authorize(Policy = "IsAdmin")]
+        [Authorize]
         [HttpPost("degrade")]
         [ProducesResponseType(200)]
         [ProducesResponseType(404)]
@@ -145,7 +145,7 @@ namespace IdentityService.Controllers
         {
             return new SessionResponse()
             {
-                UserId = user.Id,
+                User = user,
                 JwtToken = _authService.GenerateJWTToken(user),
                 ExpiresIn = TimeSpan.FromDays(_authService.TokenValidityPeriod).TotalSeconds.ToString()
             };

@@ -14,7 +14,7 @@ namespace IdentityService.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("IdentityService.Data.User", b =>
@@ -35,6 +35,8 @@ namespace IdentityService.Migrations
                     b.Property<DateTime?>("ModifiedAt");
 
                     b.Property<string>("Password");
+
+                    b.Property<string>("ProfilePictureUrl");
 
                     b.HasKey("Id");
 

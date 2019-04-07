@@ -1,0 +1,18 @@
+<div fxLayout="row" fxLayoutAlign="space-evenly start" fxLayoutGap="20px" *ngIf="imagesList$ | async as imagesList">
+  <mat-card *ngFor="let image of imagesList" fxFlex="20">
+    <mat-card-header>
+      <img mat-card-avatar src="{{image.author.profilePictureUrl}}" />
+      <mat-card-title>{{image.author.firstName}} {{image.author.lastName}}</mat-card-title>
+      <mat-card-subtitle>{{image.createdAt | date}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image class="image-wrapper" src="{{image.mediaUrl}}" alt="User image">
+    <mat-card-content>
+      <p>
+        {{image.title}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <button mat-raised-button color="accent" (click)="deleteImage(image.id)">Delete</button>
+    </mat-card-actions>
+  </mat-card>
+</div>

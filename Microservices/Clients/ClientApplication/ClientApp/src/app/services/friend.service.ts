@@ -4,6 +4,7 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { User } from './../models/user';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
+import { AddFriend } from '../models/add-friend';
 
 @Injectable({
   providedIn: 'root'
@@ -42,7 +43,7 @@ export class FriendService {
 
   public addFriend(friendId: string) {
     let userId = this.authService.loggedUserValue.id;
-    this.http.post(this.friendsUrl(userId), JSON.stringify(friendId), this.httpOptions).subscribe( () => {
+    this.http.post(this.friendsUrl(userId), new AddFriend(friendId), this.httpOptions).subscribe( () => {
       this.updateFriendlist(userId);
       this.snackService.showBar("Friend added!");
     }, () => {

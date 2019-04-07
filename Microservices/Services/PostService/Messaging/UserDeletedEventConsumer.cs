@@ -21,12 +21,18 @@ namespace PostService.Messaging
         public async Task Consume(ConsumeContext<UserDeletedEvent> eventContext)
         {
             var userId = eventContext.Message.UserId;
-            var postsToDelete = await _posts.Where(p => p.AuthorId == userId || p.WallOwnerId == userId).ToListAsync();
+            var postsToDelete = await _posts.Include("Author").Include("WallOwner")
+                                            .Where(p => p.Author.Id == userId || p.WallOwner.Id == userId).ToListAsync();
             if (postsToDelete != null && postsToDelete.Count > 0)
             {
                 _posts.RemoveRange(postsToDelete);
-                await _context.SaveChangesAsync();
             }
+            var userToDelete = await _context.Users.Where(u => u.Id == userId).FirstOrDefaultAsync();
+            if (userToDelete != null)
+            {
+                _context.Users.Remove(userToDelete);
+            }
+            await _context.SaveChangesAsync();
         }
     }
 }

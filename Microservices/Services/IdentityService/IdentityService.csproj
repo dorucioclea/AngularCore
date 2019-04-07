@@ -4,10 +4,10 @@
     <TargetFramework>netcoreapp2.1</TargetFramework>
     <DockerComposeProjectPath>..\docker-compose.dcproj</DockerComposeProjectPath>
     <UserSecretsId>399c28e5-e1ef-4a21-b308-ba43462be0fa</UserSecretsId>
+    <LangVersion>7.1</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Messaging\" />
     <Folder Include="wwwroot\" />
   </ItemGroup>
 

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityService.Data;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -7,7 +8,7 @@ namespace IdentityService.ViewModels
 {
     public class SessionResponse
     {
-        public Guid UserId { get; set; }
+        public User User { get; set; }
 
         public string JwtToken { get; set; }
 

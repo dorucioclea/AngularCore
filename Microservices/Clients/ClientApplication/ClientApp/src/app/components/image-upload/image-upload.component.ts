@@ -39,7 +39,7 @@ export class ImageUploadComponent implements OnInit {
     }
 
     this.spinnerService.show("Uploading image...");
-    this.imageService.uploadImage(imageData["image"], imageData["title"]).subscribe(result => {
+    this.imageService.uploadImage(imageData["image"], imageData["title"], imageData["fileName"]).subscribe(result => {
       this.spinnerService.hide();
       this.snackService.showBar("Image uploaded successfuly!");
       return true;

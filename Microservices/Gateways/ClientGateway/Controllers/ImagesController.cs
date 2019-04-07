@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading.Tasks;
-using ClientGateway.Models;
-using ClientGateway.Services;
-using ClientGateway.ViewModels;
+using AngularCore.Microservices.Gateways.Api.Models;
+using AngularCore.Microservices.Gateways.Api.Services;
+using AngularCore.Microservices.Gateways.Api.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -13,11 +13,12 @@ namespace ClientGateway.Controllers
 {
     [Route("api/images")]
     [ApiController]
+    [Authorize]
     public class ImagesController : ControllerBase
     {
-        private readonly IImagesApiService _imagesService;
+        private readonly IClientImagesApiService _imagesService;
 
-        public ImagesController(IImagesApiService imagesService)
+        public ImagesController(IClientImagesApiService imagesService)
         {
             _imagesService = imagesService;
         }
@@ -46,7 +47,7 @@ namespace ClientGateway.Controllers
             return Ok(images);
         }
 
-        [HttpPost("profile/{imageId}")]
+        [HttpPatch("profile/{imageId}")]
         [ProducesResponseType(200)]
         public IActionResult SetProfilePicture(Guid imageId)
         {
@@ -71,7 +72,8 @@ namespace ClientGateway.Controllers
         [HttpPost]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult Post([FromForm(Name = "image")] IFormFile file, [FromForm(Name = "title")] string title, [FromForm(Name = "authorId")] Guid authorId)
+        public IActionResult Post(  [FromForm(Name = "image")] IFormFile file, [FromForm(Name = "title")] string title,
+                                    [FromForm(Name = "authorId")] Guid authorId, [FromForm(Name = "fileName")] string fileName)
         {
             bool save = false;
             var imageCreate = new ImageCreate();
@@ -85,6 +87,7 @@ namespace ClientGateway.Controllers
                     imageCreate.AuthorId = authorId;
                     imageCreate.Title = title;
                     imageCreate.ImageBase64 = base64Image;
+                    imageCreate.FileName = fileName;
                     save = true;
                 }
             }

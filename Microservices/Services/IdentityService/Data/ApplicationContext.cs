@@ -1,6 +1,8 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace IdentityService.Data
 {
@@ -22,6 +24,18 @@ namespace IdentityService.Data
 
         public override int SaveChanges()
         {
+            ModifyEntitiesOnSave();
+            return base.SaveChanges();
+        }
+
+        public override Task<int> SaveChangesAsync(CancellationToken cancellationToken = default)
+        {
+            ModifyEntitiesOnSave();
+            return base.SaveChangesAsync(cancellationToken);
+        }
+
+        private void ModifyEntitiesOnSave()
+        {
             var AddedEntities = ChangeTracker.Entries<BaseEntity>().Where(e => e.State == EntityState.Added).ToList();
             AddedEntities.ForEach(e =>
             {
@@ -33,8 +47,6 @@ namespace IdentityService.Data
             {
                 e.Entity.ModifiedAt = DateTime.Now;
             });
-
-            return base.SaveChanges();
         }
     }
 }

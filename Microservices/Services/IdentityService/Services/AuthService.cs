@@ -13,10 +13,7 @@ namespace IdentityService.Services
         private readonly AppSettings _appSettings;
         public int TokenValidityPeriod
         {
-            get
-            {
-                return _appSettings.TokenDurationDays;
-            }
+            get => _appSettings.TokenDurationDays;
         }
 
         public AuthService(IOptions<AppSettings> appSettings)

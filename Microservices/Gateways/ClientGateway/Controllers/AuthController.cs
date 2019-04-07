@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClientGateway.Services;
-using ClientGateway.ViewModels;
-using Microsoft.AspNetCore.Http;
+using AngularCore.Microservices.Gateways.Api.Services;
+using AngularCore.Microservices.Gateways.Api.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientGateway.Controllers
 {
-    [Route("api/auth")]
     [ApiController]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
-        private readonly IIdentityApiService _identityService;
+        private readonly IClientIdentityApiService _identityService;
 
-        public AuthController(IIdentityApiService identityService)
+        public AuthController(IClientIdentityApiService identityService)
         {
             _identityService = identityService;
         }
@@ -38,8 +38,7 @@ namespace ClientGateway.Controllers
             return Ok(response);
         }
 
-        // TODO
-        //[Authorize]
+        [Authorize]
         [HttpGet("renew")]
         [ProducesResponseType(typeof(SessionResponse), 200)]
         public async Task<IActionResult> RenewSession()

@@ -22,11 +22,10 @@ namespace SearchService.Controllers
         // GET api/values
         [HttpGet("{phrase}")]
         [ProducesResponseType(typeof(List<Guid>), 200)]
-        public async Task<List<Guid>> SearchUsers(string phrase)
+        public async Task<List<User>> SearchUsers(string phrase)
         {
-            var users = _users.Where(u => u.FullName.ToUpper().Contains(phrase.ToUpper()))
-                                .Select(u => u.Id).ToListAsync();
-            return await users;
+            var users = await _users.Where(u => u.FullName.ToUpper().Contains(phrase.ToUpper())).ToListAsync();
+            return users;
         }
     }
 }

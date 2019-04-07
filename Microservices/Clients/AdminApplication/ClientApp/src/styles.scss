@@ -1,0 +1,42 @@
+/* You can add global styles to this file, and also import other style files */
+@import '~@angular/material/theming';
+
+@mixin theme-color-grabber($theme) {
+  $primary: map-get($theme, primary);
+  $accent: map-get($theme, accent);
+  $warn: map-get($theme, warn);
+
+  .primaryColorBG {
+    background-color: mat-color($primary);
+  }
+
+  .accentColorBG {
+    background-color: mat-color($accent);
+  }
+
+  .warnColorBG {
+    background-color: mat-color($warn);
+  }
+}
+
+.router-content {
+  padding: 30px;
+}
+
+.error-message-box {
+  background-color: pink;
+  border: 1px;
+  border-style: solid;
+  border-color: darkred;
+  color: darkred;
+  padding: 10px !important;
+  margin-bottom: 16px;
+
+  & mat-card-content {
+    font-size: 12px !important;
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+

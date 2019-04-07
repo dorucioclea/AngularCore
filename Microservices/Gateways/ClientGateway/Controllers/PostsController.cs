@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClientGateway.Models;
-using ClientGateway.Services;
-using ClientGateway.ViewModels;
-using Microsoft.AspNetCore.Http;
+using AngularCore.Microservices.Gateways.Api.Models;
+using AngularCore.Microservices.Gateways.Api.Services;
+using AngularCore.Microservices.Gateways.Api.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientGateway.Controllers
 {
     [Route("api/posts")]
     [ApiController]
+    [Authorize]
     public class PostsController : ControllerBase
     {
-        private readonly IPostsApiService _postsService;
+        private readonly IClientPostsApiService _postsService;
 
-        public PostsController(IPostsApiService postsService)
+        public PostsController(IClientPostsApiService postsService)
         {
             _postsService = postsService;
         }

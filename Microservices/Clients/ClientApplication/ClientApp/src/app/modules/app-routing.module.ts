@@ -1,9 +1,9 @@
 import { RouterModule, Routes } from '@angular/router';
 import { NgModule } from '@angular/core';
-import { WallComponent } from '@app/pages/client/wall/wall.component';
+import { WallComponent } from '@app/pages/wall/wall.component';
 import { AuthComponent } from '@app/pages/auth/auth.component';
-import { ProfileComponent } from '@app/pages/client/profile/profile.component';
-import { FriendsComponent } from '@app/pages/client/friends/friends.component';
+import { ProfileComponent } from '@app/pages/profile/profile.component';
+import { FriendsComponent } from '@app/pages/friends/friends.component';
 import { AuthGuard } from '@app/guards/auth.guard';
 
 const routes: Routes = [

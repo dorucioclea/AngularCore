@@ -25,8 +25,10 @@ namespace SearchService.Messaging
             {
                 await _users.AddAsync(new User
                 {
-                    Name = eventContext.Message.FirstName,
-                    Surname = eventContext.Message.LastName
+                    Id = eventContext.Message.UserId,
+                    FirstName = eventContext.Message.FirstName,
+                    LastName = eventContext.Message.LastName,
+                    ProfilePictureUrl = eventContext.Message.ProfilePictureUrl
                 });
                 await _context.SaveChangesAsync();
             }

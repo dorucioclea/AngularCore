@@ -3,9 +3,9 @@
     <mat-nav-list dense>
       <h2 matSubheader>Friends:</h2>
       <mat-list-item *ngFor="let friend of friends" [routerLink]='["/profile", friend.id]'>
-        <img matListAvatar src="{{friend.profilePicture.mediaUrl}}">
+        <img matListAvatar src="{{friend.profilePictureUrl}}">
         <div matLine>
-          {{friend.name}} {{friend.surname}}
+          {{friend.firstName}} {{friend.lastName}}
         </div>
       </mat-list-item>
     </mat-nav-list>

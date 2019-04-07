@@ -1,0 +1,15 @@
+@import '~@angular/material/theming';
+@import './styles';
+
+
+@include mat-core();
+
+$AngularCore-primary: mat-palette($mat-gray, 900);
+$AngularCore-accent: mat-palette($mat-gray, 800);
+$AngularCore-warn: mat-palette($mat-red);
+
+$AngularCore-theme: mat-light-theme($AngularCore-primary, $AngularCore-accent, $AngularCore-warn);
+
+@include theme-color-grabber($AngularCore-theme);
+@include angular-material-theme($AngularCore-theme);
+

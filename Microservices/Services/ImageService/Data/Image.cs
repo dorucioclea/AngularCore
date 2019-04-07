@@ -1,10 +1,8 @@
-﻿using System;
-
-namespace ImageService.Data
+﻿namespace ImageService.Data
 {
     public class Image : BaseEntity
     {
-        public Guid AuthorId { get; set; }
+        public User Author { get; set; }
         
         public string MediaUrl { get; set; }
 

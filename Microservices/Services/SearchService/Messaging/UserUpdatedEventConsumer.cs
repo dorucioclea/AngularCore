@@ -23,8 +23,8 @@ namespace SearchService.Messaging
             var user = _users.Where(u => u.Id == eventContext.Message.UserId).FirstOrDefault();
             if (user != null)
             {
-                user.Name = eventContext.Message.FirstName;
-                user.Surname = eventContext.Message.LastName;
+                user.FirstName = eventContext.Message.FirstName;
+                user.LastName = eventContext.Message.LastName;
 
                 _users.Update(user);
                 await _context.SaveChangesAsync();

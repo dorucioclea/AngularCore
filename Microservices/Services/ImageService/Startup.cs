@@ -40,6 +40,9 @@ namespace ImageService
 
             var builder = new ContainerBuilder();
             builder.RegisterType<UserDeletedEventConsumer>();
+            builder.RegisterType<UserAddedEventConsumer>();
+            builder.RegisterType<UserUpdatedEventConsumer>();
+            builder.RegisterType<ProfilePictureChangedEventConsumer>();
             builder.Register(context =>
             {
                 return Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -54,6 +57,9 @@ namespace ImageService
                     cfg.ReceiveEndpoint(host, "angularcore_" + Guid.NewGuid().ToString(), e =>
                     {
                         e.Consumer<UserDeletedEventConsumer>(context);
+                        e.Consumer<UserAddedEventConsumer>(context);
+                        e.Consumer<UserUpdatedEventConsumer>(context);
+                        e.Consumer<ProfilePictureChangedEventConsumer>(context);
                     });
                 });
             })
@@ -79,7 +85,8 @@ namespace ImageService
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseStaticFiles();
+            //app.UseHttpsRedirection();
             app.UseMvc();
 
             var bus = ApplicationContainer.Resolve<IBusControl>();

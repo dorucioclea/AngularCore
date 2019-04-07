@@ -15,7 +15,8 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AuthService {
 
-  private authUrl = "http://localhost:16000/api/auth";
+  private apiUrl = "http://localhost:16000/api";
+  private authUrl = this.apiUrl + "/auth";
 
   private authTokenFieldName  = 'auth_token';
   private expiresAtFieldName = 'expires_at';
@@ -37,6 +38,7 @@ export class AuthService {
     if(!this.checkForSavedUser()) {
       this.logout();
     }
+    console.log("Auth url: ", this.authUrl);
   }
 
   public get isLoggedIn() {
@@ -84,7 +86,7 @@ export class AuthService {
 
     if( userId ){
       try {
-        await this.http.get<User>("/api/v1/users/" + userId).toPromise();
+        await this.http.get<User>(this.apiUrl + "/users/" + userId).toPromise();
         console.log("User with id: [" + userId + "] exists");
         this.renewSession()
         return true
@@ -104,7 +106,7 @@ export class AuthService {
     }
 
     try {
-      await this.http.get<User>("/api/users/" + userId).toPromise();
+      await this.http.get<User>(this.apiUrl + "/users/" + userId).toPromise();
       console.log("User with id: [" + userId + "] exists");
       this.renewSession()
     } catch(err) {

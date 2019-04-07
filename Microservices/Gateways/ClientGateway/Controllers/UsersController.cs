@@ -2,21 +2,22 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using ClientGateway.Models;
-using ClientGateway.Services;
-using ClientGateway.ViewModels;
-using Microsoft.AspNetCore.Http;
+using AngularCore.Microservices.Gateways.Api.Models;
+using AngularCore.Microservices.Gateways.Api.Services;
+using AngularCore.Microservices.Gateways.Api.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ClientGateway.Controllers
 {
     [Route("api/users")]
     [ApiController]
+    [Authorize]
     public class UsersController : ControllerBase
     {
-        private readonly IUsersApiService _usersService;
+        private readonly IClientUsersApiService _usersService;
 
-        public UsersController(IUsersApiService usersService)
+        public UsersController(IClientUsersApiService usersService)
         {
             _usersService = usersService;
         }
@@ -53,11 +54,11 @@ namespace ClientGateway.Controllers
         [HttpPost("{userId}/friends")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
-        public IActionResult AddFriend(Guid userId, [FromBody] AddFriend addFriend)
+        public async Task<IActionResult> AddFriend(Guid userId, [FromBody] AddFriend addFriend)
         {
             try
             {
-                _usersService.AddUserFriend(userId, addFriend);
+                await Task.Run(() => _usersService.AddUserFriend(userId, addFriend));
             }
             catch (Exception ex)
             {
@@ -68,9 +69,9 @@ namespace ClientGateway.Controllers
 
         [HttpDelete("{userId}/friends/{friendId}")]
         [ProducesResponseType(204)]
-        public IActionResult RemoveFriend(Guid userId, Guid friendId)
+        public async Task<IActionResult> RemoveFriend(Guid userId, Guid friendId)
         {
-            _usersService.RemoveUserFriend(userId, friendId);
+            await Task.Run(() => _usersService.RemoveUserFriend(userId, friendId));
             return NoContent();
         }
     }

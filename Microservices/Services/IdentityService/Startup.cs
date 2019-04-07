@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using IdentityService.Data;
+using IdentityService.Extensions;
+using IdentityService.Messaging;
 using IdentityService.Services;
 using MassTransit;
 using MassTransit.Util;
@@ -39,6 +41,7 @@ namespace IdentityService
 
             var appSettingsSection = Configuration.GetSection("AppSettings");
             services.Configure<AppSettings>(appSettingsSection);
+            services.AddCustomJwt(appSettingsSection.GetValue<string>("Secret"));
             services.AddDbContext<ApplicationContext>(options =>
                options.UseMySql(appSettingsSection.GetValue<string>("DbConnection"))
             );
@@ -46,6 +49,7 @@ namespace IdentityService
 
             var builder = new ContainerBuilder();
             builder.RegisterType<AuthService>();
+            builder.RegisterType<ProfilePictureChangedEventConsumer>();
             builder.Register(context =>
             {
                 return Bus.Factory.CreateUsingRabbitMq(cfg =>
@@ -60,7 +64,7 @@ namespace IdentityService
                     cfg.ReceiveEndpoint(host, "angularcore_" + Guid.NewGuid().ToString(), e =>
                     {
                         // Register consumers here as such:
-                        //e.Consumer<UserAddedEventConsumer>(context);
+                        e.Consumer<ProfilePictureChangedEventConsumer>(context);
                     });
                 });
             })
@@ -86,7 +90,8 @@ namespace IdentityService
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            app.UseAuthentication();
+            //app.UseHttpsRedirection();
             app.UseMvc();
 
             var bus = ApplicationContainer.Resolve<IBusControl>();

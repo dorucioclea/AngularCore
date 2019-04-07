@@ -1,0 +1,16 @@
+<mat-card>
+  <mat-card-content>
+    <form (ngSubmit)="addPost()" [formGroup]="postForm" fxLayout="column" fxAlign="start stretch">
+
+      <input formControlName="authorId" hidden />
+      <input formControlName="wallOwnerId" hidden />
+
+      <mat-form-field>
+        <textarea matInput rows="4" formControlName="content" placeholder="Post content:"></textarea>
+      </mat-form-field>
+
+      <button mat-raised-button color="accent"type="submit">Add</button>
+
+    </form>
+  </mat-card-content>
+</mat-card>

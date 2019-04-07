@@ -5,14 +5,13 @@
     <DockerTargetOS>Linux</DockerTargetOS>
     <ProjectGuid>8d4c6a86-e93f-4ae1-a76e-56533d1415f5</ProjectGuid>
     <DockerLaunchAction>LaunchBrowser</DockerLaunchAction>
-    <DockerServiceUrl>{Scheme}://localhost:{ServicePort}</DockerServiceUrl>
-    <DockerServiceName>angularcoremicroservices</DockerServiceName>
+    <DockerServiceUrl>http://localhost:5000</DockerServiceUrl>
+    <DockerServiceName>clientapplication</DockerServiceName>
   </PropertyGroup>
   <ItemGroup>
     <None Include="docker-compose.override.yml">
       <DependentUpon>docker-compose.yml</DependentUpon>
     </None>
     <None Include="docker-compose.yml" />
-    <None Include=".dockerignore" />
   </ItemGroup>
 </Project>

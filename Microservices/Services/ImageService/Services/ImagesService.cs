@@ -22,7 +22,7 @@ namespace ImageService.Services
             _images = context.Set<Image>();
         }
 
-        public Image SaveImage(Guid authorId, string imageBase64, string fileName, string title)
+        public async Task<Image> SaveImage(Guid authorId, string imageBase64, string fileName, string title)
         {
             string webRootPath = _hostingEnvironment.WebRootPath;
             string mediaUrlDirectory = Path.Combine("upload", authorId.ToString());
@@ -47,12 +47,12 @@ namespace ImageService.Services
                 }
             }
 
-            var mediaUrl = Path.Combine(mediaUrlDirectory, fileName);
+            var mediaUrl = Path.Combine(mediaUrlDirectory, newFileName);
             Image newImage = new Image
             {
                 Id = imageGuid,
-                AuthorId = authorId,
-                MediaUrl = mediaUrl,
+                Author = await _context.Users.Where(u => u.Id == authorId).FirstOrDefaultAsync(),
+                MediaUrl = "http://localhost:15003/" + mediaUrl,
                 Title = title
             };
             _images.Add(newImage);
